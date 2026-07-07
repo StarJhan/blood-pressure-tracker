@@ -21,100 +21,87 @@
 </head>
 <body class="bg-[#fdf6e2] text-gray-700 antialiased pb-10">
 
-    <!-- 頂部導航 -->
-    <div class="bg-rose-300 text-white pt-12 pb-6 px-4 text-center shadow-sm rounded-b-[2rem] sticky top-0 z-50">
+    <div class="bg-amber-500 text-white pt-12 pb-6 px-4 text-center shadow-sm rounded-b-[2rem] sticky top-0 z-50">
         <h1 class="text-2xl font-bold tracking-wide flex items-center justify-center gap-2">
-            <span>💖</span> 我的血壓小日記
+            <span>🔮</span> 降肉大師 · 健康算命攤
         </h1>
     </div>
 
     <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
         
-        <!-- 今日健康小籤詩 -->
-        <div class="bg-amber-50 border-2 border-dashed border-amber-300 p-3 rounded-2xl shadow-sm text-center">
-            <p class="text-xs font-bold text-amber-600">🔮 今日健康小籤詩 🔮</p>
-            <p id="fortuneText" class="text-xs text-amber-700 mt-1 font-medium">載入運勢中...</p>
+        <div class="bg-amber-50 border-2 border-dashed border-amber-400 p-3 rounded-2xl shadow-sm text-center">
+            <p class="text-xs font-bold text-amber-600">☯️ 本日健康開運籤詩 ☯️</p>
+            <p id="fortuneText" class="text-xs text-amber-700 mt-1 font-medium">正在感應天地靈氣...</p>
         </div>
 
-        <!-- 血壓寵物互動區 -->
-        <div id="petCard" class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-pink-100 text-center transition-all duration-300">
-            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">( ˶ˊᵕˋ˵ )</div>
-            <div class="bg-pink-50 rounded-2xl p-3 mt-3 border border-pink-100">
-                <p id="petName" class="text-xs font-bold text-pink-500 mb-0.5">血壓守護精靈 · 星星</p>
-                <p id="petSpeech" class="text-xs text-pink-700 font-medium">哈囉！今天量血壓了嗎？伸出雙手讓偶保護你的健康吧！</p>
+        <div id="petCard" class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-amber-200 text-center transition-all duration-300">
+            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">🧙‍♂️</div>
+            <div class="bg-amber-50 rounded-2xl p-3 mt-3 border border-amber-100">
+                <p id="petName" class="text-xs font-bold text-amber-600 mb-0.5">命理健康大師 · 降肉</p>
+                <p id="petSpeech" class="text-xs text-amber-800 font-medium">看你面帶紅光，是不是剛剛偷跑去跟人家吵架？伸出雙臂讓本大師幫你的血管掐指一算！</p>
             </div>
         </div>
 
-        <!-- 數據輸入表單 -->
         <div class="bg-white p-5 rounded-[2rem] shadow-sm border-2 border-orange-100">
-            <h2 class="text-base font-bold text-orange-400 mb-4 flex items-center gap-1.5">🐾 新增今日紀錄</h2>
+            <h2 class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測</h2>
+            
+            <div class="flex items-center justify-between bg-orange-50/60 p-1.5 rounded-xl mb-4 border border-orange-100">
+                <span class="text-xs font-bold text-orange-500 pl-2">本座要量測幾次：</span>
+                <div class="flex space-x-1">
+                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-white text-gray-500 shadow-sm">量1次</button>
+                    <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-white text-gray-500 shadow-sm">量2次</button>
+                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-500 text-white shadow-sm">3次聖筊平均</button>
+                </div>
+            </div>
+
             <form id="bpForm" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">收縮壓 (高壓)</label>
-                        <input type="number" inputmode="numeric" id="sys" required placeholder="mmHg" 
-                            class="w-full bg-orange-50/50 border-2 border-orange-100 rounded-2xl p-3 text-center text-xl font-bold text-orange-500 focus:outline-none focus:border-orange-300 transition-all">
+                
+                <div id="inputsContainer" class="space-y-3">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">舒張壓 (低壓)</label>
-                        <input type="number" inputmode="numeric" id="dia" required placeholder="mmHg" 
-                            class="w-full bg-orange-50/50 border-2 border-orange-100 rounded-2xl p-3 text-center text-xl font-bold text-orange-500 focus:outline-none focus:border-orange-300 transition-all">
-                    </div>
-                </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">脈搏 (心跳)</label>
-                    <input type="number" inputmode="numeric" id="pulse" required placeholder="bpm" 
-                        class="w-full bg-orange-50/50 border-2 border-orange-100 rounded-2xl p-3 text-center text-xl font-bold text-orange-500 focus:outline-none focus:border-orange-300 transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日狀態心情</label>
-                    <!-- 標籤容器 -->
+                    <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日凡間心情狀態</label>
                     <div class="flex flex-wrap gap-2 mt-1" id="tagContainer">
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☀️ 剛起床</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌙 睡前</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">💊 吃藥後</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☕ 喝咖啡</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌀 累累的</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☀️ 剛睡醒清醒</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌙 準備躺平</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">💊 已服仙丹</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☕ 注入咖啡因</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌀 靈魂出竅中</button>
                     </div>
                     
-                    <!-- 自訂狀態輸入區 -->
                     <div class="flex gap-2 mt-3">
-                        <input type="text" id="customTagInput" placeholder="輸入自訂狀態（如：剛運動完）" 
+                        <input type="text" id="customTagInput" placeholder="輸入自訂業障（如：主管碎念）" 
                             class="flex-1 bg-purple-50/40 border border-purple-100 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-purple-300">
                         <button type="button" onclick="addCustomTag()" 
                             class="bg-purple-400 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-[0.95] transition-all">
-                            ＋新增
+                            ＋開運符
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-rose-400 text-white font-bold py-3.5 rounded-2xl shadow-sm hover:bg-rose-500 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
-                    ✨ 餵食精靈並儲存 ✨
+                <button type="submit" class="w-full bg-amber-500 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-amber-600 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
+                    ☯️ 請大師開示並存檔 ☯️
                 </button>
             </form>
         </div>
 
-        <!-- 趨勢圖表 -->
         <div class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-blue-50">
-            <h2 class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血壓泡泡波浪圖</h2>
+            <h2 class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血管風水波浪圖</h2>
             <div class="relative w-full h-44">
                 <canvas id="bpChart"></canvas>
             </div>
         </div>
 
-        <!-- 歷史數據清單 -->
         <div class="bg-white p-5 rounded-[2rem] shadow-sm border-2 border-purple-50">
             <div class="flex justify-between items-center mb-3">
-                <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史小足跡</h2>
+                <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史健康功德簿</h2>
                 <div class="flex space-x-1.5">
-                    <button onclick="exportCSV()" class="text-xs font-bold text-rose-500 bg-rose-50 px-2.5 py-1 rounded-xl border border-rose-100">匯出</button>
-                    <button onclick="clearData()" class="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-xl border border-gray-200">清空</button>
+                    <button onclick="exportCSV()" class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-100">外傳CSV</button>
+                    <button onclick="clearData()" class="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-xl border border-gray-200">渡化清空</button>
                 </div>
             </div>
-            <div class="flow-root max-h-52 overflow-y-auto divide-y divide-purple-50" id="historyList">
-                <p class="text-center text-gray-300 py-6 text-xs">還沒有留下足跡唷～</p>
+            <div class="flow-root max-h-64 overflow-y-auto divide-y divide-purple-50" id="historyList">
+                <p class="text-center text-gray-300 py-6 text-xs">功德簿空空如也～</p>
             </div>
         </div>
     </div>
@@ -122,60 +109,115 @@
     <script>
         let bpData = JSON.parse(localStorage.getItem('bpRecords')) || [];
         let bpChart = null;
+        let currentMeasureCount = 3;
 
         const fortunes = [
-            "大吉 🌟 今天的血管順暢得像溜滑梯！適合放鬆一下心情喔。",
-            "中吉 ☕ 量血壓前記得跟咖啡保持30分鐘的小距離唷～",
-            "小吉 🦶 今日幸運秘訣：雙腳平放不交叉，血壓精靈最開心！",
-            "大吉 🍦 心情好血壓就會好，今天對自己微笑三次吧！",
-            "平安 💧 今日多喝水能帶來好運，讓心跳跟著微風一起打節拍。",
-            "小吉 🛌 昨晚睡得飽，血管沒煩惱！今晚也要早點休息個喵。"
+            "大吉 🌟 血管天庭飽滿！氣血順暢得像溜滑梯，今日宜吃大餐犒賞自己！",
+            "中吉 ☕ 量血壓前與咖啡保持三十步距離，方能避開數字調皮之災。",
+            "小吉 🦶 大師開示：量測時雙腳平放不交叉，好運自然降肉！",
+            "上上簽 🍦 心情愉悅則百病不侵，今天對鏡子裡的自己微笑三次可開運。",
+            "平安 💧 今日多喝無根水（溫開水），讓脈搏隨著微風低調打節拍。",
+            "小吉 🛌 昨夜睡得飽，血管沒煩惱！今晚子時（11點）前宜躺平就寢。"
         ];
 
         document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
 
+        function renderInputs() {
+            const container = document.getElementById('inputsContainer');
+            let html = '';
+            for (let i = 1; i <= currentMeasureCount; i++) {
+                const labelPrefix = currentMeasureCount > 1 ? `第 ${i} 柱香 - ` : '';
+                html += `
+                    <div class="bg-gray-50/50 p-3 rounded-2xl border border-orange-100/50">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}高壓</label>
+                                <input type="number" inputmode="numeric" id="sys_${i}" required placeholder="mmHg" 
+                                    class="w-full bg-white border border-orange-100 rounded-xl p-2 text-center text-base font-bold text-orange-500 focus:outline-none focus:border-orange-300">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}低壓</label>
+                                <input type="number" inputmode="numeric" id="dia_${i}" required placeholder="mmHg" 
+                                    class="w-full bg-white border border-orange-100 rounded-xl p-2 text-center text-base font-bold text-orange-500 focus:outline-none focus:border-orange-300">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}心跳</label>
+                                <input type="number" inputmode="numeric" id="pulse_${i}" required placeholder="bpm" 
+                                    class="w-full bg-white border border-orange-100 rounded-xl p-2 text-center text-base font-bold text-orange-500 focus:outline-none focus:border-orange-300">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function setMeasureCount(count) {
+            currentMeasureCount = count;
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`btnCount${i}`);
+                if (i === count) {
+                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-500 text-white shadow-sm";
+                } else {
+                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-white text-gray-500 shadow-sm";
+                }
+            }
+            renderInputs();
+        }
+
         document.getElementById('bpForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const sys = parseInt(document.getElementById('sys').value);
-            const dia = parseInt(document.getElementById('dia').value);
-            const pulse = parseInt(document.getElementById('pulse').value);
+            
+            let totalSys = 0, totalDia = 0, totalPulse = 0;
+            let detailRecords = [];
+
+            for (let i = 1; i <= currentMeasureCount; i++) {
+                const sys = parseInt(document.getElementById(`sys_${i}`).value);
+                const dia = parseInt(document.getElementById(`dia_${i}`).value);
+                const pulse = parseInt(document.getElementById(`pulse_${i}`).value);
+                
+                totalSys += sys;
+                totalDia += dia; TotalPulse += pulse;
+
+                detailRecords.push({ sys, dia, pulse });
+            }
+
+            const avgSys = Math.round(totalSys / currentMeasureCount);
+            const avgDia = Math.round(totalDia / currentMeasureCount);
+            const avgPulse = Math.round(totalPulse / currentMeasureCount);
             
             const activeTags = [];
-            // 同時收集內建與自訂被選中的標籤
             document.querySelectorAll('.tag-btn.bg-orange-400, .tag-btn.bg-purple-400').forEach(btn => activeTags.push(btn.innerText));
+            if (currentMeasureCount > 1) activeTags.push(`☯️ ${currentMeasureCount}次合盤`);
 
             const newRecord = {
                 id: Date.now(),
                 date: new Date().toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                sys: sys,
-                dia: dia,
-                pulse: pulse,
-                tags: activeTags.join(' ')
+                sys: avgSys,
+                dia: avgDia,
+                pulse: avgPulse,
+                tags: activeTags.join(' '),
+                details: detailRecords
             };
 
             bpData.unshift(newRecord);
             localStorage.setItem('bpRecords', JSON.stringify(bpData));
 
-            interactPet(sys, dia);
+            interactPet(avgSys, avgDia);
             updateUI();
             
-            this.reset();
-            
-            // 重設所有標籤外觀，並清除動態建立的自訂標籤
-            const container = document.getElementById('tagContainer');
-            container.innerHTML = `
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☀️ 剛起床</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌙 睡前</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">💊 吃藥後</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☕ 喝咖啡</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌀 累累的</button>
+            document.getElementById('tagContainer').innerHTML = `
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☀️ 剛睡醒清醒</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌙 準備躺平</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">💊 已服仙丹</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☕ 注入咖啡因</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌀 靈魂出竅中</button>
             `;
+            setMeasureCount(currentMeasureCount);
         });
 
         function toggleTag(btn) {
-            // 判斷是普通標籤還是自訂標籤(紫色)
             const isCustom = btn.classList.contains('border-purple-300') || btn.classList.contains('bg-purple-400');
-            
             if (btn.classList.contains('bg-orange-400') || btn.classList.contains('bg-purple-400')) {
                 btn.className = isCustom 
                     ? "tag-btn bg-purple-50 text-purple-500 text-xs px-3 py-2 rounded-xl border border-purple-200 transition-all"
@@ -192,19 +234,28 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // 自動補上 # 符號看起來更像標籤
             const tagText = text.startsWith('#') ? text : '#' + text;
-
             const container = document.getElementById('tagContainer');
             const newBtn = document.createElement('button');
             newBtn.type = 'button';
             newBtn.onclick = function() { toggleTag(this); };
-            // 預設直接幫用戶選取（變成紫色亮起狀態）
             newBtn.className = "tag-btn bg-purple-400 text-white text-xs px-3 py-2 rounded-xl border-purple-400 shadow-sm font-bold transition-all";
             newBtn.innerText = tagText;
 
             container.appendChild(newBtn);
-            input.value = ''; // 清空輸入框
+            input.value = '';
+        }
+
+        function toggleDetail(id) {
+            const el = document.getElementById(`detail-${id}`);
+            const arrow = document.getElementById(`arrow-${id}`);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                arrow.innerText = '🔼';
+            } else {
+                el.classList.add('hidden');
+                arrow.innerText = '🔽';
+            }
         }
 
         function interactPet(sys, dia) {
@@ -214,36 +265,52 @@
 
             if (sys < 120 && dia < 80) {
                 card.className = "bg-green-50 p-4 rounded-[2rem] shadow-sm border-2 border-green-200 text-center transition-all duration-300";
-                avatar.innerText = "( 🐾 ˊᵕˋ 🐾 )";
-                speech.innerText = "姆啾～血壓超級標準！主人目前的健康防禦力 100%，星星覺得很棒！";
+                avatar.innerText = "🧙‍♂️ 🔮 ✨";
+                speech.innerText = "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康工具人！";
             } else if (sys >= 140 || dia >= 90) {
                 card.className = "bg-red-50 p-4 rounded-[2rem] shadow-sm border-2 border-red-200 text-center transition-all duration-300";
-                avatar.innerText = "( 🦖 🛑 🦖 )";
-                speech.innerText = "哇哇！血壓怪獸大暴走了！主人請快坐下休息10分鐘，喝口水深呼吸，星星陪你！";
+                avatar.innerText = "👹 🛑 ⚡";
+                speech.innerText = "大事不妙！血壓怪獸九天玄女降肉了！施主你這數字在發爐啊！快去旁邊靜坐10分鐘重測，切莫浮躁！";
             } else {
                 card.className = "bg-yellow-50 p-4 rounded-[2rem] shadow-sm border-2 border-yellow-200 text-center transition-all duration-300";
-                avatar.innerText = "( 🐻 💦 🐻 )";
-                speech.innerText = "唔～血壓稍微有一點點調皮偏高囉。今天是不是有點累呢？星星提醒你要放輕鬆喔！";
+                avatar.innerText = "🤨 💦 🌀";
+                speech.innerText = "嗯...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人或凡間雜事太多？記得提早躺平！";
             }
         }
 
         function updateUI() {
             const listContainer = document.getElementById('historyList');
             if (bpData.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-gray-300 py-6 text-xs">還沒有留下足跡唷～</p>';
+                listContainer.innerHTML = '<p class="text-center text-gray-300 py-6 text-xs">功德簿空空如也～</p>';
             } else {
-                listContainer.innerHTML = bpData.map(r => `
-                    <div class="py-3 flex justify-between items-center text-sm">
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-bold">${r.date}</p>
-                            <p class="text-[11px] text-rose-400 font-bold mt-0.5">${r.tags || '🐾 一般記錄'}</p>
+                listContainer.innerHTML = bpData.map(r => {
+                    let detailsHtml = '';
+                    if (r.details && r.details.length > 1) {
+                        detailsHtml = `<div id="detail-${r.id}" class="hidden mt-1.5 p-2 bg-purple-50/40 rounded-xl text-[11px] text-gray-500 space-y-0.5 border border-purple-50">`;
+                        r.details.forEach((d, idx) => {
+                            detailsHtml += `<p>第 ${idx+1} 柱香：高壓 <span class="font-bold">${d.sys}</span> / 低壓 <span class="font-bold">${d.dia}</span> / 心跳 <span class="font-bold">${d.pulse}</span></p>`;
+                        });
+                        detailsHtml += `</div>`;
+                    }
+
+                    return `
+                        <div class="py-3 divide-y divide-transparent">
+                            <div class="flex justify-between items-center text-sm">
+                                <div onclick="${r.details && r.details.length > 1 ? `toggleDetail(${r.id})` : ''}" class="cursor-pointer">
+                                    <p class="text-[10px] text-gray-400 font-bold flex items-center gap-1">
+                                        ${r.date} ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px]">🔽 顯現各柱</span>` : ''}
+                                    </p>
+                                    <p class="text-[11px] text-amber-600 font-bold mt-0.5">${r.tags || '🐾 凡塵紀錄'}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-gray-600 text-base bg-orange-50 px-2 py-0.5 rounded-xl">${r.sys}/${r.dia}</span>
+                                    <span class="text-xs text-gray-400 ml-1">💓 ${r.pulse}</span>
+                                </div>
+                            </div>
+                            ${detailsHtml}
                         </div>
-                        <div class="text-right">
-                            <span class="font-bold text-gray-600 text-base bg-orange-50 px-2 py-0.5 rounded-xl">${r.sys}/${r.dia}</span>
-                            <span class="text-xs text-gray-400 ml-1">💓 ${r.pulse}</span>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             const chartData = [...bpData].slice(0, 7).reverse();
@@ -259,8 +326,8 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: '高壓 (紅)', data: sysValues, borderColor: '#f87171', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#f87171' },
-                        { label: '低壓 (藍)', data: diaValues, borderColor: '#60a5fa', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#60a5fa' }
+                        { label: '平均高壓', data: sysValues, borderColor: '#f87171', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#f87171' },
+                        { label: '平均低壓', data: diaValues, borderColor: '#60a5fa', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#60a5fa' }
                     ]
                 },
                 options: {
@@ -276,30 +343,36 @@
         }
 
         function exportCSV() {
-            if(bpData.length === 0) return alert('沒有紀錄可以搬回家唷');
-            let csvContent = "\uFEFF日期時間,收縮壓(高壓),舒張壓(低壓),脈搏(心跳),心情標籤\n";
-            bpData.forEach(r => { csvContent += `${r.date},${r.sys},${r.dia},${r.pulse},${r.tags}\n`; });
+            if(bpData.length === 0) return alert('功德簿空無一物，無法外傳');
+            let csvContent = "\uFEFF日期時間,平均高壓,平均低壓,平均心跳,心情標籤,詳細各次紀錄\n";
+            bpData.forEach(r => { 
+                let detailsStr = '';
+                if(r.details) {
+                    detailsStr = r.details.map((d, i) => `[第${i+1}次:${d.sys}/${d.dia}/${d.pulse}]`).join(' ');
+                }
+                csvContent += `${r.date},${r.sys},${r.dia},${r.pulse},${r.tags},${detailsStr}\n`; 
+            });
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `我的血壓足跡_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `降肉大師功德簿_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         function clearData() {
-            if (confirm('確定要清空精靈好不容易幫你存下來的紀錄嗎？🥺')) {
+            if (confirm('確定要渡化清空所有好不容易存下來的健康功德紀錄嗎？🥺')) {
                 bpData = [];
                 localStorage.removeItem('bpRecords');
-                document.getElementById('petCard').className = "bg-white p-4 rounded-[2rem] shadow-sm border-2 border-pink-100 text-center";
-                document.getElementById('petAvatar').innerText = "( 🐾 ˊᵕˋ 🐾 )";
-                document.getElementById('petSpeech').innerText = "紀錄被清空了～那偶們今天再重新出發吧！";
+                document.getElementById('petCard').className = "bg-white p-4 rounded-[2rem] shadow-sm border-2 border-amber-200 text-center";
+                document.getElementById('petAvatar').innerText = "🧙‍♂️";
+                document.getElementById('petSpeech').innerText = "一切皆空～因果重來！今天起再重新累積功德吧！";
                 updateUI();
             }
         }
 
-        updateUI();
+        setMeasureCount(3);
     </script>
 </body>
 </html>
