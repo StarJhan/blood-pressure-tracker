@@ -3,95 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>血壓健康記錄</title>
+    <title>我的血壓小日記</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="血壓記錄">
+    <meta name="apple-mobile-web-app-title" content="血壓日記">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { -webkit-tap-highlight-color: transparent; }
+        body { 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        /* 讓滾動條變可愛 */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #fed7aa; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased pb-10">
+<body class="bg-[#fdf6e2] text-gray-700 antialiased pb-10">
 
-    <div class="bg-indigo-600 text-white pt-12 pb-6 px-4 text-center shadow-md sticky top-0 z-50">
-        <h1 class="text-xl font-bold tracking-wide">血壓隨手記</h1>
-        <p class="text-xs text-indigo-200 mt-1">專為 iPhone 設計的健康看板</p>
+    <div class="bg-rose-300 text-white pt-12 pb-6 px-4 text-center shadow-sm rounded-b-[2rem] sticky top-0 z-50">
+        <h1 class="text-2xl font-bold tracking-wide flex items-center justify-center gap-2">
+            <span>💖</span> 我的血壓小日記
+        </h1>
     </div>
 
-    <div class="max-w-md mx-auto px-4 mt-4 space-y-6">
+    <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
         
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r shadow-sm">
-            <div class="flex">
-                <div class="flex-shrink-0">💡</div>
-                <div class="ml-2">
-                    <p class="text-xs font-semibold text-blue-800">量測溫馨提醒</p>
-                    <p class="text-xs text-blue-700 mt-0.5">請靜坐5分鐘、雙腳平放不交叉。量前30分鐘請勿飲用咖啡或激烈運動。</p>
-                </div>
+        <div class="bg-amber-50 border-2 border-dashed border-amber-300 p-3 rounded-2xl shadow-sm text-center">
+            <p class="text-xs font-bold text-amber-600">🔮 今日健康小籤詩 🔮</p>
+            <p id="fortuneText" class="text-xs text-amber-700 mt-1 font-medium">載入運勢中...</p>
+        </div>
+
+        <div id="petCard" class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-pink-100 text-center transition-all duration-300">
+            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">( ˶ˊᵕˋ˵ )</div>
+            <div class="bg-pink-50 rounded-2xl p-3 mt-3 border border-pink-100">
+                <p id="petName" class="text-xs font-bold text-pink-500 mb-0.5">血壓守護精靈 · 澎澎</p>
+                <p id="petSpeech" class="text-xs text-pink-700 font-medium">哈囉！今天量血壓了嗎？伸出雙手讓偶保護你的健康吧！</p>
             </div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-base font-bold text-gray-700 mb-4 flex items-center">📝 新增量測紀錄</h2>
+        <div class="bg-white p-5 rounded-[2rem] shadow-sm border-2 border-orange-100">
+            <h2 class="text-base font-bold text-orange-400 mb-4 flex items-center gap-1.5">🐾 新增今日紀錄</h2>
             <form id="bpForm" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">收縮壓 (高壓)</label>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">收縮壓 (高壓)</label>
                         <input type="number" inputmode="numeric" id="sys" required placeholder="mmHg" 
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full bg-orange-50/50 border-2 border-orange-100 rounded-2xl p-3 text-center text-xl font-bold text-orange-500 focus:outline-none focus:border-orange-300 transition-all">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">舒張壓 (低壓)</label>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">舒張壓 (低壓)</label>
                         <input type="number" inputmode="numeric" id="dia" required placeholder="mmHg" 
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full bg-orange-50/50 border-2 border-orange-100 rounded-2xl p-3 text-center text-xl font-bold text-orange-500 focus:outline-none focus:border-orange-300 transition-all">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">脈搏 (心跳)</label>
+                    <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">脈搏 (心跳)</label>
                     <input type="number" inputmode="numeric" id="pulse" required placeholder="bpm" 
-                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        class="w-full bg-orange-50/50 border-2 border-orange-100 rounded-2xl p-3 text-center text-xl font-bold text-orange-500 focus:outline-none focus:border-orange-300 transition-all">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">備註標籤 (選填)</label>
+                    <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日狀態心情</label>
                     <div class="flex flex-wrap gap-2 mt-1" id="tagContainer">
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full border border-gray-200">#剛起床</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full border border-gray-200">#睡前</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full border border-gray-200">#吃藥前</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full border border-gray-200">#感覺頭暈</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☀️ 剛起床</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌙 睡前</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">💊 吃藥後</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☕ 喝咖啡</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌀 累累的</button>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-indigo-700 active:scale-[0.98] transition-all text-sm mt-2">
-                    儲存紀錄
+                <button type="submit" class="w-full bg-rose-400 text-white font-bold py-3.5 rounded-2xl shadow-sm hover:bg-rose-500 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
+                    ✨ 餵食寵物並儲存 ✨
                 </button>
             </form>
         </div>
 
-        <div id="statusAlert" class="hidden p-4 rounded-2xl shadow-sm border text-center transition-all">
-            <p id="statusTitle" class="font-bold text-lg"></p>
-            <p id="statusDesc" class="text-xs mt-1 text-gray-600"></p>
-        </div>
-
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-base font-bold text-gray-700 mb-3">📈 近期血壓趨勢</h2>
-            <div class="relative w-full h-48">
+        <div class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-blue-50">
+            <h2 class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血壓泡泡波浪圖</h2>
+            <div class="relative w-full h-44">
                 <canvas id="bpChart"></canvas>
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <div class="bg-white p-5 rounded-[2rem] shadow-sm border-2 border-purple-50">
             <div class="flex justify-between items-center mb-3">
-                <h2 class="text-base font-bold text-gray-700">📋 歷史紀錄</h2>
-                <div class="flex space-x-2">
-                    <button onclick="exportCSV()" class="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">匯出</button>
-                    <button onclick="clearData()" class="text-xs text-red-500 bg-red-50 px-2 py-1 rounded">清空</button>
+                <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史小足跡</h2>
+                <div class="flex space-x-1.5">
+                    <button onclick="exportCSV()" class="text-xs font-bold text-rose-500 bg-rose-50 px-2.5 py-1 rounded-xl border border-rose-100">匯出</button>
+                    <button onclick="clearData()" class="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-xl border border-gray-200">清空</button>
                 </div>
             </div>
-            <div class="flow-root max-h-60 overflow-y-auto divide-y divide-gray-100" id="historyList">
-                <p class="text-center text-gray-400 py-4 text-xs">尚無量測數據</p>
+            <div class="flow-root max-h-52 overflow-y-auto divide-y divide-purple-50" id="historyList">
+                <p class="text-center text-gray-300 py-6 text-xs">還沒有留下足跡唷～</p>
             </div>
         </div>
     </div>
@@ -100,15 +107,27 @@
         let bpData = JSON.parse(localStorage.getItem('bpRecords')) || [];
         let bpChart = null;
 
+        // 隨機健康籤詩庫
+        const fortunes = [
+            "大吉 🌟 今天的血管順暢得像溜滑梯！適合來碗溫暖的拉麵喔。",
+            "中吉 ☕ 量血壓前記得跟咖啡保持30分鐘的小距離唷～",
+            "小吉 🦶 今日幸運秘訣：雙腳平放不交叉，血壓精靈最開心！",
+            "大吉 🍦 心情好血壓就會好，今天對自己微笑三次吧！",
+            "平安 💧 今日多喝水能帶來好運，讓心跳跟著微風一起打節拍。",
+            "小吉 🛌 昨晚睡得飽，血管沒煩惱！今晚也要早點休息個喵。"
+        ];
+
+        // 隨機初始化籤詩
+        document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+
         document.getElementById('bpForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const sys = parseInt(document.getElementById('sys').value);
             const dia = parseInt(document.getElementById('dia').value);
             const pulse = parseInt(document.getElementById('pulse').value);
             
-            // 收集選中的標籤
             const activeTags = [];
-            document.querySelectorAll('.tag-btn.bg-indigo-600').forEach(btn => activeTags.push(btn.innerText));
+            document.querySelectorAll('.tag-btn.bg-orange-400').forEach(btn => activeTags.push(btn.innerText));
 
             const newRecord = {
                 id: Date.now(),
@@ -122,73 +141,65 @@
             bpData.unshift(newRecord);
             localStorage.setItem('bpRecords', JSON.stringify(bpData));
 
-            // 更新畫面與判定高低
-            evaluateBP(sys, dia);
+            // 動態改變小寵物表情與對話
+            interactPet(sys, dia);
             updateUI();
             
-            // 重設表單與標籤
             this.reset();
             document.querySelectorAll('.tag-btn').forEach(btn => {
-                btn.className = "tag-btn bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full border border-gray-200";
+                btn.className = "tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all";
             });
         });
 
         function toggleTag(btn) {
-            if (btn.classList.contains('bg-indigo-600')) {
-                btn.className = "tag-btn bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full border border-gray-200";
+            if (btn.classList.contains('bg-orange-400')) {
+                btn.className = "tag-btn bg-gray-50 text-gray-500 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all";
             } else {
-                btn.className = "tag-btn bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-full border border-indigo-600 shadow-sm";
+                btn.className = "tag-btn bg-orange-400 text-white text-xs px-3 py-2 rounded-xl border-orange-400 shadow-sm font-bold transition-all";
             }
         }
 
-        function evaluateBP(sys, dia) {
-            const alertBox = document.getElementById('statusAlert');
-            const title = document.getElementById('statusTitle');
-            const desc = document.getElementById('statusDesc');
-            alertBox.classList.remove('hidden');
+        function interactPet(sys, dia) {
+            const avatar = document.getElementById('petAvatar');
+            const speech = document.getElementById('petSpeech');
+            const card = document.getElementById('petCard');
 
             if (sys < 120 && dia < 80) {
-                alertBox.className = "p-4 rounded-2xl shadow-sm border border-green-200 bg-green-50 text-green-800 text-center animate-pulse";
-                title.innerText = "🟢 血壓正常";
-                desc.innerText = "數值相當棒！請繼續保持均衡飲食與規律運動。";
+                card.className = "bg-green-50 p-4 rounded-[2rem] shadow-sm border-2 border-green-200 text-center transition-all duration-300";
+                avatar.innerText = "( 🐾 ˊᵕˋ 🐾 )";
+                speech.innerText = "姆啾～血壓超級標準！主人目前的健康防禦力 100%，請繼續保持唷！";
             } else if (sys >= 140 || dia >= 90) {
-                alertBox.className = "p-4 rounded-2xl shadow-sm border border-red-200 bg-red-50 text-red-800 text-center";
-                title.innerText = "🔴 高血壓二期";
-                desc.innerText = "血壓顯著偏高！請坐下休息10分鐘重測。若持續偏高或伴隨頭痛、胸悶，請遵醫囑或就醫。";
-            } else if (sys >= 130 || (dia >= 80 && dia <= 89)) {
-                alertBox.className = "p-4 rounded-2xl shadow-sm border border-orange-200 bg-orange-50 text-orange-800 text-center";
-                title.innerText = "🟠 高血壓一期";
-                desc.innerText = "血壓偏高囉，日常請減少鹽分攝取、避免熬夜，留意身體狀況。";
+                card.className = "bg-red-50 p-4 rounded-[2rem] shadow-sm border-2 border-red-200 text-center transition-all duration-300";
+                avatar.innerText = "( 🦖 🛑 🦖 )";
+                speech.innerText = "哇哇！血壓怪獸大暴走了！主人請快坐下休息10分鐘，喝口水深呼吸，偶陪你！";
             } else {
-                alertBox.className = "p-4 rounded-2xl shadow-sm border border-yellow-200 bg-yellow-50 text-yellow-800 text-center";
-                title.innerText = "🟡 血壓偏高";
-                desc.innerText = "收縮壓稍微超出正常範圍，注意作息與適度補充水分。";
+                card.className = "bg-yellow-50 p-4 rounded-[2rem] shadow-sm border-2 border-yellow-200 text-center transition-all duration-300";
+                avatar.innerText = "( 🐻 💦 🐻 )";
+                speech.innerText = "唔～血壓稍微有一點點調皮偏高囉。今天是不是有點累呢？放輕鬆、別熬夜唷！";
             }
         }
 
         function updateUI() {
-            // 1. 更新歷史列表
             const listContainer = document.getElementById('historyList');
             if (bpData.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-gray-400 py-4 text-xs">尚無量測數據</p>';
+                listContainer.innerHTML = '<p class="text-center text-gray-300 py-6 text-xs">還沒有留下足跡唷～</p>';
             } else {
                 listContainer.innerHTML = bpData.map(r => `
-                    <div class="py-2.5 flex justify-between items-center text-sm">
+                    <div class="py-3 flex justify-between items-center text-sm">
                         <div>
-                            <p class="text-xs text-gray-400">${r.date}</p>
-                            <p class="text-xs text-indigo-600 font-medium mt-0.5">${r.tags}</p>
+                            <p class="text-[10px] text-gray-400 font-bold">${r.date}</p>
+                            <p class="text-[11px] text-rose-400 font-bold mt-0.5">${r.tags || '🐾 一般記錄'}</p>
                         </div>
                         <div class="text-right">
-                            <span class="font-bold text-gray-700 text-base">${r.sys}/${r.dia}</span>
-                            <span class="text-xs text-gray-400 ml-1">脈搏 ${r.pulse}</span>
+                            <span class="font-bold text-gray-600 text-base bg-orange-50 px-2 py-0.5 rounded-xl">${r.sys}/${r.dia}</span>
+                            <span class="text-xs text-gray-400 ml-1">💓 ${r.pulse}</span>
                         </div>
                     </div>
                 `).join('');
             }
 
-            // 2. 更新 Chart.js 圖表 (最多顯示最新7筆)
             const chartData = [...bpData].slice(0, 7).reverse();
-            const labels = chartData.map(r => r.date.split(' ')[0]); // 只留月/日
+            const labels = chartData.map(r => r.date.split(' ')[0]);
             const sysValues = chartData.map(r => r.sys);
             const diaValues = chartData.map(r => r.dia);
 
@@ -200,44 +211,46 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: '高壓', data: sysValues, borderColor: '#ef4444', backgroundColor: 'transparent', tension: 0.2, borderWidth: 2 },
-                        { label: '低壓', data: diaValues, borderColor: '#3b82f6', backgroundColor: 'transparent', tension: 0.2, borderWidth: 2 }
+                        { label: '高壓 (紅)', data: sysValues, borderColor: '#f87171', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#f87171' },
+                        { label: '低壓 (藍)', data: diaValues, borderColor: '#60a5fa', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#60a5fa' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { boxWidth: 10, font: { size: 10 } } } },
-                    scales: { y: { ticks: { font: { size: 10 } } }, x: { ticks: { font: { size: 10 } } } }
+                    plugins: { legend: { labels: { boxWidth: 8, font: { size: 10, weight: 'bold' } } } },
+                    scales: { 
+                        y: { ticks: { font: { size: 9 } }, grid: { color: '#f3f4f6' } }, 
+                        x: { ticks: { font: { size: 9 } }, grid: { display: false } } 
+                    }
                 }
             });
         }
 
         function exportCSV() {
-            if(bpData.length === 0) return alert('沒有可導出的數據');
-            let csvContent = "\uFEFF日期時間,收縮壓(高壓),舒張壓(低壓),脈搏(心跳),備註\n";
-            bpData.forEach(r => {
-                csvContent += `${r.date},${r.sys},${r.dia},${r.pulse},${r.tags}\n`;
-            });
+            if(bpData.length === 0) return alert('沒有紀錄可以搬回家唷');
+            let csvContent = "\uFEFF日期時間,收縮壓(高壓),舒張壓(低壓),脈搏(心跳),心情標籤\n";
+            bpData.forEach(r => { csvContent += `${r.date},${r.sys},${r.dia},${r.pulse},${r.tags}\n`; });
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `血壓歷史紀錄_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `我的血壓足跡_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         function clearData() {
-            if (confirm('確定要清空所有存在手機本機的血壓紀錄嗎？（建議清空前先點選匯出備份）')) {
+            if (confirm('確定要清空精靈好不容易幫你存下來的紀錄嗎？🥺')) {
                 bpData = [];
                 localStorage.removeItem('bpRecords');
-                document.getElementById('statusAlert').classList.add('hidden');
+                document.getElementById('petCard').className = "bg-white p-4 rounded-[2rem] shadow-sm border-2 border-pink-100 text-center";
+                document.getElementById('petAvatar').innerText = "( 🐾 ˊᵕˋ 🐾 )";
+                document.getElementById('petSpeech').innerText = "紀錄被清空了～那偶們今天再重新出發吧！";
                 updateUI();
             }
         }
 
-        // 初始化
         updateUI();
     </script>
 </body>
