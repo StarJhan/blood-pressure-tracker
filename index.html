@@ -21,6 +21,7 @@
 </head>
 <body class="bg-[#fdf6e2] text-gray-700 antialiased pb-10">
 
+    <!-- 頂部導航 -->
     <div class="bg-amber-500 text-white pt-12 pb-6 px-4 text-center shadow-sm rounded-b-[2rem] sticky top-0 z-50">
         <h1 class="text-2xl font-bold tracking-wide flex items-center justify-center gap-2">
             <span>🔮</span> 降肉大師 · 健康算命攤
@@ -29,11 +30,13 @@
 
     <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
         
+        <!-- 今日健康小籤詩 -->
         <div class="bg-amber-50 border-2 border-dashed border-amber-400 p-3 rounded-2xl shadow-sm text-center">
             <p class="text-xs font-bold text-amber-600">☯️ 本日健康開運籤詩 ☯️</p>
             <p id="fortuneText" class="text-xs text-amber-700 mt-1 font-medium">正在感應天地靈氣...</p>
         </div>
 
+        <!-- 算命大師互動區 -->
         <div id="petCard" class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-amber-200 text-center transition-all duration-300">
             <div id="petAvatar" class="text-5xl animate-bounce duration-1000">🧙‍♂️</div>
             <div class="bg-amber-50 rounded-2xl p-3 mt-3 border border-amber-100">
@@ -42,22 +45,26 @@
             </div>
         </div>
 
+        <!-- 數據輸入表單 -->
         <div class="bg-white p-5 rounded-[2rem] shadow-sm border-2 border-orange-100">
-            <h2 class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測</h2>
+            <h2 class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測數據</h2>
             
+            <!-- 次數選擇切換紐 -->
             <div class="flex items-center justify-between bg-orange-50/60 p-1.5 rounded-xl mb-4 border border-orange-100">
-                <span class="text-xs font-bold text-orange-500 pl-2">本座要量測幾次：</span>
+                <span class="text-xs font-bold text-orange-500 pl-2">本座要呼喚幾英呎：</span>
                 <div class="flex space-x-1">
-                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-white text-gray-500 shadow-sm">量1次</button>
+                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-white text-gray-500 shadow-sm">直接降肉</button>
                     <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-white text-gray-500 shadow-sm">量2次</button>
-                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-500 text-white shadow-sm">3次聖筊平均</button>
+                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-500 text-white shadow-sm">800英呎聖筊平均</button>
                 </div>
             </div>
 
             <form id="bpForm" class="space-y-4">
                 
+                <!-- 數據輸入區容器 -->
                 <div id="inputsContainer" class="space-y-3">
-                    </div>
+                    <!-- 動態載入 -->
+                </div>
 
                 <div>
                     <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日凡間心情狀態</label>
@@ -80,11 +87,12 @@
                 </div>
 
                 <button type="submit" class="w-full bg-amber-500 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-amber-600 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
-                    ☯️ 請大師開示並存檔 ☯️
+                    ☯️ 恭請九天玄女開示 ☯️
                 </button>
             </form>
         </div>
 
+        <!-- 趨勢圖表 -->
         <div class="bg-white p-4 rounded-[2rem] shadow-sm border-2 border-blue-50">
             <h2 class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血管風水波浪圖</h2>
             <div class="relative w-full h-44">
@@ -92,9 +100,10 @@
             </div>
         </div>
 
+        <!-- 歷史數據清單 -->
         <div class="bg-white p-5 rounded-[2rem] shadow-sm border-2 border-purple-50">
             <div class="flex justify-between items-center mb-3">
-                <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史健康功德簿</h2>
+                <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史健康功功德簿</h2>
                 <div class="flex space-x-1.5">
                     <button onclick="exportCSV()" class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-100">外傳CSV</button>
                     <button onclick="clearData()" class="text-xs font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-xl border border-gray-200">渡化清空</button>
@@ -117,7 +126,7 @@
             "小吉 🦶 大師開示：量測時雙腳平放不交叉，好運自然降肉！",
             "上上簽 🍦 心情愉悅則百病不侵，今天對鏡子裡的自己微笑三次可開運。",
             "平安 💧 今日多喝無根水（溫開水），讓脈搏隨著微風低調打節拍。",
-            "小吉 🛌 昨夜睡得飽，血管沒煩惱！今晚子時（11點）前宜躺平就寢。"
+            "小吉 🛌 昨晚睡得飽，血管沒煩惱！今晚子時（11點）前宜躺平就寢。"
         ];
 
         document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
@@ -126,7 +135,18 @@
             const container = document.getElementById('inputsContainer');
             let html = '';
             for (let i = 1; i <= currentMeasureCount; i++) {
-                const labelPrefix = currentMeasureCount > 1 ? `第 ${i} 柱香 - ` : '';
+                // 動態改寫搞笑標籤
+                let labelPrefix = '';
+                if (currentMeasureCount === 3) {
+                    if (i === 1) labelPrefix = '【800英呎】';
+                    if (i === 2) labelPrefix = '【500英呎】';
+                    if (i === 3) labelPrefix = '【 降肉！】';
+                } else if (currentMeasureCount === 2) {
+                    labelPrefix = `第 ${i} 次 - `;
+                } else {
+                    labelPrefix = '【即刻降肉】';
+                }
+
                 html += `
                     <div class="bg-gray-50/50 p-3 rounded-2xl border border-orange-100/50">
                         <div class="grid grid-cols-3 gap-2">
@@ -177,7 +197,8 @@
                 const pulse = parseInt(document.getElementById(`pulse_${i}`).value);
                 
                 totalSys += sys;
-                totalDia += dia; TotalPulse += pulse;
+                totalDia += dia; 
+                totalPulse += pulse;
 
                 detailRecords.push({ sys, dia, pulse });
             }
@@ -188,7 +209,7 @@
             
             const activeTags = [];
             document.querySelectorAll('.tag-btn.bg-orange-400, .tag-btn.bg-purple-400').forEach(btn => activeTags.push(btn.innerText));
-            if (currentMeasureCount > 1) activeTags.push(`☯️ ${currentMeasureCount}次合盤`);
+            if (currentMeasureCount > 1) activeTags.push(`🪶 九天玄女合盤`);
 
             const newRecord = {
                 id: Date.now(),
@@ -266,7 +287,7 @@
             if (sys < 120 && dia < 80) {
                 card.className = "bg-green-50 p-4 rounded-[2rem] shadow-sm border-2 border-green-200 text-center transition-all duration-300";
                 avatar.innerText = "🧙‍♂️ 🔮 ✨";
-                speech.innerText = "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康工具人！";
+                speech.innerText = "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康功德人！";
             } else if (sys >= 140 || dia >= 90) {
                 card.className = "bg-red-50 p-4 rounded-[2rem] shadow-sm border-2 border-red-200 text-center transition-all duration-300";
                 avatar.innerText = "👹 🛑 ⚡";
@@ -288,7 +309,15 @@
                     if (r.details && r.details.length > 1) {
                         detailsHtml = `<div id="detail-${r.id}" class="hidden mt-1.5 p-2 bg-purple-50/40 rounded-xl text-[11px] text-gray-500 space-y-0.5 border border-purple-50">`;
                         r.details.forEach((d, idx) => {
-                            detailsHtml += `<p>第 ${idx+1} 柱香：高壓 <span class="font-bold">${d.sys}</span> / 低壓 <span class="font-bold">${d.dia}</span> / 心跳 <span class="font-bold">${d.pulse}</span></p>`;
+                            let prefix = '';
+                            if (r.details.length === 3) {
+                                if (idx === 0) prefix = '800英呎';
+                                if (idx === 1) prefix = '500英呎';
+                                if (idx === 2) prefix = '中華路降肉';
+                            } else {
+                                prefix = `第 ${idx+1} 次`;
+                            }
+                            detailsHtml += `<p>${prefix}：高壓 <span class="font-bold">${d.sys}</span> / 低壓 <span class="font-bold">${d.dia}</span> / 心跳 <span class="font-bold">${d.pulse}</span></p>`;
                         });
                         detailsHtml += `</div>`;
                     }
@@ -298,7 +327,7 @@
                             <div class="flex justify-between items-center text-sm">
                                 <div onclick="${r.details && r.details.length > 1 ? `toggleDetail(${r.id})` : ''}" class="cursor-pointer">
                                     <p class="text-[10px] text-gray-400 font-bold flex items-center gap-1">
-                                        ${r.date} ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px]">🔽 顯現各柱</span>` : ''}
+                                        ${r.date} ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px]">🔽 顯現各路英呎</span>` : ''}
                                     </p>
                                     <p class="text-[11px] text-amber-600 font-bold mt-0.5">${r.tags || '🐾 凡塵紀錄'}</p>
                                 </div>
