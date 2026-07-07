@@ -21,7 +21,6 @@
 </head>
 <body class="bg-[#121212] text-gray-200 antialiased pb-10">
 
-    <!-- 頂部導航 -->
     <div class="bg-amber-600 text-white pt-12 pb-6 px-4 text-center shadow-sm rounded-b-[2rem] sticky top-0 z-50">
         <h1 class="text-2xl font-bold tracking-wide flex items-center justify-center gap-2">
             <span>🔮</span> 降肉大師 · 健康算命攤
@@ -30,13 +29,11 @@
 
     <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
         
-        <!-- 今日健康小籤詩 -->
         <div class="bg-[#1e1e1e] border-2 border-dashed border-amber-500/50 p-3 rounded-2xl shadow-sm text-center">
             <p class="text-xs font-bold text-amber-400">☯️ 本日健康開運籤詩 ☯️</p>
             <p id="fortuneText" class="text-xs text-amber-200/80 mt-1 font-medium">正在感應天地靈氣...</p>
         </div>
 
-        <!-- 算命大師互動區 -->
         <div id="petCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center transition-all duration-300">
             <div id="petAvatar" class="text-5xl animate-bounce duration-1000">🧙‍♂️</div>
             <div class="bg-[#2a2a2a] rounded-2xl p-3 mt-3 border border-gray-800">
@@ -45,26 +42,22 @@
             </div>
         </div>
 
-        <!-- 數據輸入表單 -->
         <div class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border-2 border-orange-500/20">
-            <h2 class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測數據</h2>
+            <h2 class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測</h2>
             
-            <!-- 次數選擇切換紐 -->
             <div class="flex items-center justify-between bg-[#2a2a2a] p-1.5 rounded-xl mb-4 border border-gray-800">
-                <span class="text-xs font-bold text-orange-400 pl-2">本座要呼喚幾英呎：</span>
+                <span class="text-xs font-bold text-orange-400 pl-2">本座要量測幾次：</span>
                 <div class="flex space-x-1">
-                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">直接降肉</button>
+                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量1次</button>
                     <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量2次</button>
-                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-600 text-white shadow-sm">800英呎聖筊平均</button>
+                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-600 text-white shadow-sm">3次聖筊平均</button>
                 </div>
             </div>
 
             <form id="bpForm" class="space-y-4">
                 
-                <!-- 數據輸入區容器 -->
                 <div id="inputsContainer" class="space-y-3">
-                    <!-- 動態載入 -->
-                </div>
+                    </div>
 
                 <div>
                     <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日凡間心情狀態</label>
@@ -92,7 +85,6 @@
             </form>
         </div>
 
-        <!-- 趨勢圖表 -->
         <div class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-blue-500/10">
             <h2 class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血管風水波浪圖</h2>
             <div class="relative w-full h-44">
@@ -100,7 +92,6 @@
             </div>
         </div>
 
-        <!-- 歷史數據清單 -->
         <div class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border-2 border-purple-500/10">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史健康功功德簿</h2>
@@ -135,6 +126,7 @@
             const container = document.getElementById('inputsContainer');
             let html = '';
             for (let i = 1; i <= currentMeasureCount; i++) {
+                // 動態改寫搞笑標籤
                 let labelPrefix = '';
                 if (currentMeasureCount === 3) {
                     if (i === 1) labelPrefix = '【800英呎】';
@@ -228,10 +220,10 @@
             
             document.getElementById('tagContainer').innerHTML = `
                 <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">☀️ 剛睡醒清醒</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌙 準備躺平</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">💊 已服仙丹</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">☕ 注入咖啡因</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-200 transition-all">🌀 靈魂出竅中</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">🌙 準備躺平</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">💊 已服仙丹</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">☕ 注入咖啡因</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">🌀 靈魂出竅中</button>
             `;
             setMeasureCount(currentMeasureCount);
         });
@@ -373,7 +365,7 @@
         }
 
         function exportCSV() {
-            if(bpData.length === 0) return alert('功德簿空無一物，無法外傳');
+            if(bpData.length === 0) return alert('功功德簿空無一物，無法外傳');
             let csvContent = "\uFEFF日期時間,平均高壓,平均低壓,平均心跳,心情標籤,詳細各次紀錄\n";
             bpData.forEach(r => { 
                 let detailsStr = '';
@@ -385,7 +377,7 @@
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `降肉大師功德簿_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `降肉大師功功德簿_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
