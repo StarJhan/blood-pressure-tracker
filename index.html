@@ -14,6 +14,7 @@
         body { 
             -webkit-tap-highlight-color: transparent; 
             font-family: 'Noto Sans TC', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
@@ -21,39 +22,43 @@
 </head>
 <body class="bg-[#121212] text-gray-200 antialiased pb-10">
 
-    <div id="navBar" class="bg-amber-600 text-white pt-12 pb-6 px-4 shadow-sm rounded-b-[2rem] sticky top-0 z-50 flex items-center justify-between">
-        <h1 id="app-title" class="text-xl font-bold tracking-wide flex items-center gap-2 pl-2">
-            <span>🔮</span> 降肉大師 · 健康算命攤
+    <div id="navBar" class="bg-[#1e1e1e] text-white pt-12 pb-6 px-4 shadow-sm rounded-b-[2rem] sticky top-0 z-50 flex items-center justify-between border-b border-gray-800">
+        <h1 id="app-title" class="text-xl font-bold tracking-wide flex items-center gap-2 pl-2 text-gray-100">
+            <span>🖤</span> 預設經典 · 血壓日記
         </h1>
-        <button id="theme-btn" onclick="toggleTheme()" class="text-xs font-bold bg-[#1a1a1a]/40 text-white border border-white/40 px-3 py-1.5 rounded-full shadow-sm mr-2 active:scale-95 transition-all">
-            🏥 切換專業醫療版
-        </button>
+        <select id="themeSelector" onchange="selectTheme(this.value)" class="text-xs font-bold bg-[#2a2a2a] text-gray-200 border border-gray-700 px-3 py-1.5 rounded-full shadow-sm mr-2 active:scale-95 transition-all outline-none">
+            <option value="classic">🖤 預設經典版</option>
+            <option value="god">🔮 九天玄女版</option>
+            <option value="medical">🏥 專業醫療版</option>
+            <option value="corp">💼 社畜求生版</option>
+            <option value="cyber">⚡ 賽博超頻版</option>
+        </select>
     </div>
 
     <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
         
-        <div id="fortuneCard" class="bg-[#1e1e1e] border-2 border-dashed border-amber-500/50 p-3 rounded-2xl shadow-sm text-center">
-            <p id="fortuneTitle" class="text-xs font-bold text-amber-400">☯️ 本日健康開運籤詩 ☯️</p>
-            <p id="fortuneText" class="text-xs text-amber-200/80 mt-1 font-medium">正在感應天地靈氣...</p>
+        <div id="fortuneCard" class="bg-[#1e1e1e] border-2 border-dashed border-gray-700 p-3 rounded-2xl shadow-sm text-center">
+            <p id="fortuneTitle" class="text-xs font-bold text-gray-400">💡 本日健康小貼士 💡</p>
+            <p id="fortuneText" class="text-xs text-gray-400 mt-1 font-medium">正在載入健康數據中...</p>
         </div>
 
-        <div id="petCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center transition-all duration-300">
-            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">🧙‍♂️</div>
+        <div id="petCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border border-gray-800 text-center transition-all duration-300">
+            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">📊</div>
             <div class="bg-[#2a2a2a] rounded-2xl p-3 mt-3 border border-gray-800">
-                <p id="petName" class="text-xs font-bold text-amber-400 mb-0.5">命理健康大師 · 降肉</p>
-                <p id="petSpeech" class="text-xs text-gray-300 font-medium">看你面帶紅光，是不是剛剛偷跑去跟人家吵架？伸出雙臂讓本大師幫你的血管掐指一算！</p>
+                <p id="petName" class="text-xs font-bold text-gray-400 mb-0.5">智能健康助理</p>
+                <p id="petSpeech" class="text-xs text-gray-300 font-medium">歡迎使用。準備好測量血壓了嗎？請綁好袖帶，靜心坐穩後開始輸入數據。</p>
             </div>
         </div>
 
-        <div id="formCard" class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border-2 border-orange-500/20">
-            <h2 id="form-title" class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測數據</h2>
+        <div id="formCard" class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border border-gray-800">
+            <h2 id="form-title" class="text-base font-bold text-gray-200 mb-3 flex items-center gap-1.5">📝 輸入本次量測數據</h2>
             
             <div class="flex items-center justify-between bg-[#2a2a2a] p-1.5 rounded-xl mb-4 border border-gray-800">
-                <span id="lbl-count-title" class="text-xs font-bold text-orange-400 pl-2">本座要呼喚幾英呎：</span>
+                <span id="lbl-count-title" class="text-xs font-bold text-gray-400 pl-2">選擇量測模式：</span>
                 <div class="flex space-x-1">
-                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">直接降肉</button>
+                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量1次</button>
                     <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量2次</button>
-                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-600 text-white shadow-sm">800英呎聖筊平均</button>
+                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-gray-700 text-white shadow-sm">3次平均值</button>
                 </div>
             </div>
 
@@ -63,60 +68,98 @@
                     </div>
 
                 <div>
-                    <label id="lbl-mood-title" class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日凡間心情狀態</label>
+                    <label id="lbl-mood-title" class="block text-xs font-bold text-gray-400 mb-1 pl-1">當前身體/心情狀態</label>
                     <div class="flex flex-wrap gap-2 mt-1" id="tagContainer">
                         </div>
                     
                     <div class="flex gap-2 mt-3">
-                        <input type="text" id="customTagInput" placeholder="輸入自訂業障（如：主管碎念）" 
-                            class="flex-1 bg-[#2a2a2a] border border-gray-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-purple-500 text-white placeholder-gray-500">
+                        <input type="text" id="customTagInput" placeholder="輸入自訂備註狀態" 
+                            class="flex-1 bg-[#2a2a2a] border border-gray-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-gray-500 text-white placeholder-gray-500">
                         <button type="button" onclick="addCustomTag()" id="custom-tag-btn"
-                            class="bg-purple-600 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-[0.95] transition-all">
-                            ＋開運符
+                            class="bg-gray-700 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-[0.95] transition-all">
+                            ＋新增備註
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" id="submit-btn" class="w-full bg-amber-600 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-amber-700 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
-                    ☯️ 恭請九天玄女開示 ☯️
+                <button type="submit" id="submit-btn" class="w-full bg-gray-700 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-gray-600 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
+                    儲存本次健康數據
                 </button>
             </form>
         </div>
 
-        <div id="chartCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-blue-500/10">
-            <h2 id="chart-title" class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血管風水波浪圖</h2>
+        <div id="chartCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border border-gray-800">
+            <h2 id="chart-title" class="text-base font-bold text-gray-300 mb-3 flex items-center gap-1">📊 歷史趨勢折線圖</h2>
             <div class="relative w-full h-44">
                 <canvas id="bpChart"></canvas>
             </div>
         </div>
 
-        <div id="historyCard" class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border-2 border-purple-500/10">
+        <div id="historyCard" class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border border-gray-800">
             <div class="flex justify-between items-center mb-3">
-                <h2 id="history-title" class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史健康功德簿</h2>
+                <h2 id="history-title" class="text-base font-bold text-gray-300 flex items-center gap-1">📜 歷史健康數據日誌</h2>
                 <div class="flex space-x-1.5">
-                    <button onclick="exportCSV()" id="export-btn" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/20">外傳CSV</button>
-                    <button onclick="clearData()" id="clear-btn" class="text-xs font-bold text-gray-400 bg-gray-500/10 px-2.5 py-1 rounded-xl border border-gray-800">渡化清空</button>
+                    <button onclick="exportCSV()" id="export-btn" class="text-xs font-bold text-gray-300 bg-gray-800 px-2.5 py-1 rounded-xl border border-gray-700">匯出CSV</button>
+                    <button onclick="clearData()" id="clear-btn" class="text-xs font-bold text-gray-500 bg-gray-900 px-2.5 py-1 rounded-xl border border-gray-800">清空數據</button>
                 </div>
             </div>
             <div class="flow-root max-h-64 overflow-y-auto divide-y divide-gray-800" id="historyList">
-                <p class="text-center text-gray-500 py-6 text-xs">功德簿空空如也～</p>
+                <p class="text-center text-gray-500 py-6 text-xs">尚無歷史數據紀錄</p>
             </div>
         </div>
     </div>
 
     <script>
-        // 預設主題：god (九天玄女版), medical (專業醫療版)
-        let currentTheme = 'god';
+        let currentTheme = 'classic';
         let bpData = JSON.parse(localStorage.getItem('bpRecords')) || [];
         let bpChart = null;
         let currentMeasureCount = 3;
 
-        // 雙主題語意字典
+        // 五主題全方位宇宙語意字典
         const langDict = {
+            classic: {
+                appTitle: "<span>🖤</span> 預設經典 · 血壓日記",
+                navBg: "bg-[#1e1e1e]",
+                navBorder: "border-b border-gray-800",
+                themeText: "text-gray-100",
+                fortuneTitle: "💡 本日健康小貼士 💡",
+                petName: "智能健康助理",
+                petAvatar: "📊",
+                petSpeech: "歡迎回來。量血壓前請保持平靜，雙腳著地不交叉，讓我們一起點滴追蹤血管的健康。",
+                formTitle: "📝 輸入本次量測數據",
+                countTitle: "選擇量測模式：",
+                countBtn1: "單次量測",
+                countBtn2: "量測2次",
+                countBtn3: "3次平均值",
+                moodTitle: "當前身體/心情狀態",
+                tags: ["☀️ 起床空腹", "🌙 夜間睡前", "💊 正常服藥", "☕ 剛喝咖啡", "🌀 感到疲憊"],
+                customPlaceholder: "輸入自訂備註狀態",
+                customBtn: "＋新增備註",
+                submitBtn: "儲存本次健康數據",
+                chartTitle: "📊 歷史趨勢折線圖",
+                chartLabel1: "收縮壓 (高壓)",
+                chartLabel2: "舒張壓 (低壓)",
+                historyTitle: "📜 歷史健康數據日誌",
+                exportBtn: "匯出CSV",
+                clearBtn: "清空數據",
+                emptyText: "尚無歷史數據紀錄",
+                detailArrow: "🔽 展開各次細節",
+                detailPrefix: "第",
+                cardStyle: "bg-[#1e1e1e] border border-gray-800",
+                titleColor: "text-gray-300",
+                formTitleColor: "text-gray-200",
+                fortuneTextColor: "text-gray-400",
+                fortuneBorder: "border-2 border-dashed border-gray-700",
+                btnStyle: "bg-gray-700 hover:bg-gray-600 text-white",
+                normalAdvice: "量測完成。數值非常標準！請繼續保持均衡飲食與規律作息，加油！",
+                highAdvice: "提醒：目前平均血壓數值偏高。建議您稍作休息5-10分鐘後重測。若持續偏高，請多加留意身體狀況。",
+                lowAdvice: "提示：目前平均血壓數值稍微偏低。若有頭暈、全身無力症狀，請立刻坐下休息並適度補充水分。"
+            },
             god: {
                 appTitle: "<span>🔮</span> 降肉大師 · 健康算命攤",
-                themeBtn: "🏥 切換專業醫療版",
                 navBg: "bg-amber-600",
+                navBorder: "border-none",
+                themeText: "text-white",
                 fortuneTitle: "☯️ 本日健康開運籤詩 ☯️",
                 petName: "命理健康大師 · 降肉",
                 petAvatar: "🧙‍♂️",
@@ -140,14 +183,21 @@
                 emptyText: "功德簿空空如也～",
                 detailArrow: "🔽 顯現各路英呎",
                 detailPrefix: "英呎",
+                cardStyle: "bg-[#1e1e1e] border-2 border-amber-500/30",
+                titleColor: "text-purple-400",
+                formTitleColor: "text-orange-400",
+                fortuneTextColor: "text-amber-200/80",
+                fortuneBorder: "border-2 border-dashed border-amber-500/50",
+                btnStyle: "bg-amber-600 hover:bg-amber-700 text-white",
                 normalAdvice: "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康功德人！",
                 highAdvice: "大事不妙！血壓怪獸九天玄女降肉了！施主你這數字在發爐啊！快去旁邊靜坐10分鐘重測，切莫浮躁！",
                 lowAdvice: "嗯...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人或凡間雜事太多？記得提早躺平！"
             },
             medical: {
                 appTitle: "<span>🏥</span> 智能血壓健康管理系統",
-                themeBtn: "🔮 切換九天玄女版",
                 navBg: "bg-blue-700",
+                navBorder: "border-none",
+                themeText: "text-white",
                 fortuneTitle: "🩺 今日健康衛教提醒 🩺",
                 petName: "專業醫療健康管理師",
                 petAvatar: "🧑‍⚕️",
@@ -171,9 +221,91 @@
                 emptyText: "目前尚無任何血壓數據紀錄",
                 detailArrow: "🔽 展開各次量測細節",
                 detailPrefix: "量測",
+                cardStyle: "bg-[#1e1e1e] border-2 border-blue-500/10",
+                titleColor: "text-blue-400",
+                formTitleColor: "text-blue-400",
+                fortuneTextColor: "text-gray-300",
+                fortuneBorder: "border-2 border-dashed border-blue-500/30",
+                btnStyle: "bg-blue-600 hover:bg-blue-700 text-white",
                 normalAdvice: "非常優秀！本次量測的平均血壓完全符合國際標準。請繼續保持良好的生活作息與飲食習慣方式。",
                 highAdvice: "請注意：本次平均數值偏高，已進入高血壓警戒範圍。請立刻坐下休息、喝杯溫水，若持續偏高請諮詢醫師。",
                 lowAdvice: "提示：目前量測的平均血壓數值稍微偏低。若您伴隨有頭暈或無力感，請多加留意並適時補充水分。"
+            },
+            corp: {
+                appTitle: "<span>💼</span> 科技業社畜求生儀表板",
+                navBg: "bg-teal-800",
+                navBorder: "border-none",
+                themeText: "text-white",
+                fortuneTitle: "🚨 每日職場防猝死指標 🚨",
+                petName: "職場求生導師",
+                petAvatar: "🧗",
+                petSpeech: "逼逼！看你雙眼無神，是不是剛剛開完會，又有人的大腦還沒開機就出來講鬼話？伸出雙臂量一下！",
+                formTitle: "📝 本次被釘牆上數據輸入",
+                countTitle: "目前職場壓力檢測點：",
+                countBtn1: "剛進公司",
+                countBtn2: "剛開完會",
+                countBtn3: "被主管痛釘3次平均",
+                moodTitle: "今日被職場蹂躪狀態",
+                tags: ["☀️ 剛吞完B群", "🌙 強制加班中", "💊 喝大杯美式", "☕ 聽見主管腳步", "🌀 靈魂已下班"],
+                customPlaceholder: "輸入自訂業障（如：豬隊友甩鍋）",
+                customBtn: "＋回報BUG",
+                submitBtn: "📊 計算今日續命 KPI 📊",
+                chartTitle: "📈 職場情緒血壓爆發線",
+                chartLabel1: "火氣暴走度 (SYS)",
+                chartLabel2: "理智耐受度 (DIA)",
+                historyTitle: "📜 歷史爆肝加班出勤簿",
+                exportBtn: "外傳報銷單",
+                clearBtn: "光速離職",
+                emptyText: "目前沒有任何被蹂躪的紀錄",
+                detailArrow: "🔽 顯現每次被釘細節",
+                detailPrefix: "被釘第",
+                cardStyle: "bg-[#1e1e1e] border-2 border-teal-500/20",
+                titleColor: "text-teal-400",
+                formTitleColor: "text-teal-400",
+                fortuneTextColor: "text-teal-200",
+                fortuneBorder: "border-2 border-dashed border-teal-500/40",
+                btnStyle: "bg-teal-600 hover:bg-teal-700 text-white",
+                normalAdvice: "平均數據安全合格。看來今天沒被豬隊友氣到，血管非常通暢，特准你立刻下班去買杯珍奶續命！",
+                highAdvice: "緊急警報！血壓直接衝破季度 KPI 了！別拿公司的薪水懲罰自己的血管，現在立刻去茶水間摸魚10分鐘！",
+                lowAdvice: "偵測到核心動力嚴重下滑。是不是又在做沒產值的雜事了？理智與血壓都有點偏低，今晚宜強制登出拒絕加班！"
+            },
+            cyber: {
+                appTitle: "<span>⚡</span> 賽博人體效能檢測站",
+                navBg: "bg-purple-950",
+                navBorder: "border-b border-fuchsia-500/30",
+                themeText: "text-fuchsia-400",
+                fortuneTitle: "🦾 機體系統核心日誌 🦾",
+                petName: "AI 核心管理架構",
+                petAvatar: "🤖",
+                petSpeech: "偵測到外部生物體連結。主機板目前電力剩餘 40%。請接入充氣袖帶，開始掃描核心管路壓力與幫浦時脈。",
+                formTitle: "⚡ 核心幫浦運作參數輸入",
+                countTitle: "機體管線超頻複查次數：",
+                countBtn1: "核心初檢",
+                countBtn2: "雙軌複查",
+                countBtn3: "系統效能3軌合盤",
+                moodTitle: "硬體元件目前超頻狀態",
+                tags: ["☀️ 機體剛開機", "🌙 進入休眠區", "💊 注入修復奈米", "☕ 核心超頻中", "🌀 硬體嚴重過熱"],
+                customPlaceholder: "輸入自訂負載（如：核心代碼崩潰）",
+                customBtn: "＋改寫補丁",
+                submitBtn: "⚡ 執行核心效能同步 ⚡",
+                chartTitle: "🌌 核心水冷管線壓力波形",
+                chartLabel1: "主幫浦高壓超頻",
+                chartLabel2: "副管路回流壓力",
+                historyTitle: "💾 機體歷史黑匣子報告",
+                exportBtn: "匯出二進位",
+                clearBtn: "格式化磁碟",
+                emptyText: "儲存核心內沒有任何機體參數",
+                detailArrow: "🔽 解碼各軌道數據",
+                detailPrefix: "軌道",
+                cardStyle: "bg-[#141414] border border-fuchsia-500/30",
+                titleColor: "text-fuchsia-400",
+                formTitleColor: "text-fuchsia-400",
+                fortuneTextColor: "text-fuchsia-300",
+                fortuneBorder: "border border-fuchsia-500/50 shadow-[0_0_10px_rgba(217,70,239,0.2)]",
+                btnStyle: "bg-purple-800 hover:bg-purple-700 text-fuchsia-200 border border-fuchsia-500/40",
+                normalAdvice: "核心水冷管線壓力完全符合出廠設定。系統效能極大化，准予繼續執行凡塵地表任務。",
+                highAdvice: "核心管路壓力超載臨界！主幫浦高壓異常超頻！偵測到硬體嚴重過熱，請立刻啟動安全降載躺平機制！",
+                lowAdvice: "警報：偵測到核心傳導幫浦功率偏低，流體交互速度遲緩。請立即接入碳水化合物能源並進入低能耗休眠。"
             }
         };
 
@@ -188,13 +320,13 @@
 
         document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
 
-        // 主題切換按鈕點擊
-        function toggleTheme() {
-            currentTheme = (currentTheme === 'god') ? 'medical' : 'god';
+        // 主題下拉選單切換觸發
+        function selectTheme(themeName) {
+            currentTheme = themeName;
             updateUI();
         }
 
-        // 動態渲染輸入框（保留1~3次邏輯）
+        // 動態生成輸入框
         function renderInputs() {
             const container = document.getElementById('inputsContainer');
             let html = '';
@@ -207,32 +339,40 @@
                         if (i === 1) labelPrefix = '【800英呎】';
                         if (i === 2) labelPrefix = '【500英呎】';
                         if (i === 3) labelPrefix = '【 降肉！】';
+                    } else if (currentTheme === 'corp') {
+                        if (i === 1) labelPrefix = '【剛進公司】';
+                        if (i === 2) labelPrefix = '【剛開完會】';
+                        if (i === 3) labelPrefix = '【被主管釘】';
+                    } else if (currentTheme === 'cyber') {
+                        if (i === 1) labelPrefix = '【核心初檢】';
+                        if (i === 2) labelPrefix = '【二軌複查】';
+                        if (i === 3) labelPrefix = '【效能合盤】';
                     } else {
                         labelPrefix = `【第 ${i} 次量測】`;
                     }
                 } else if (currentMeasureCount === 2) {
                     labelPrefix = `${dict.detailPrefix} ${i} - `;
                 } else {
-                    labelPrefix = currentTheme === 'god' ? '【即刻降肉】' : '【單次量測】';
+                    labelPrefix = currentTheme === 'god' ? '【即刻降肉】' : (currentTheme === 'cyber' ? '【主線掃描】' : '【單次量測】');
                 }
 
                 html += `
-                    <div class="bg-[#2a2a2a] p-3 rounded-2xl border border-orange-500/10">
+                    <div class="bg-[#2a2a2a] p-3 rounded-2xl border border-gray-800">
                         <div class="grid grid-cols-3 gap-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}高壓</label>
                                 <input type="number" inputmode="numeric" id="sys_${i}" required placeholder="mmHg" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-orange-500">
+                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-gray-500">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}低壓</label>
                                 <input type="number" inputmode="numeric" id="dia_${i}" required placeholder="mmHg" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-orange-500">
+                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-gray-500">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}心跳</label>
                                 <input type="number" inputmode="numeric" id="pulse_${i}" required placeholder="bpm" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-orange-500">
+                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-gray-500">
                             </div>
                         </div>
                     </div>
@@ -241,13 +381,12 @@
             container.innerHTML = html;
         }
 
-        // 切換次數按鈕
         function setMeasureCount(count) {
             currentMeasureCount = count;
             for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`btnCount${i}`);
                 if (i === count) {
-                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-600 text-white shadow-sm";
+                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-gray-600 text-white shadow-sm";
                 } else {
                     btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm";
                 }
@@ -255,7 +394,6 @@
             renderInputs();
         }
 
-        // 動態生成心情標籤按鈕
         function renderTags() {
             const container = document.getElementById('tagContainer');
             const tags = langDict[currentTheme].tags;
@@ -264,16 +402,15 @@
             `).join('');
         }
 
-        // 點擊心情標籤切換高亮
         function toggleTag(btn) {
-            if (btn.classList.contains('bg-orange-500')) {
+            if (btn.classList.contains('bg-orange-500') || btn.classList.contains('bg-fuchsia-600')) {
                 btn.className = "tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all";
             } else {
-                btn.className = "tag-btn bg-orange-500 text-white text-xs px-3 py-2 rounded-xl border-orange-500 shadow-sm font-bold transition-all";
+                const highlightClass = currentTheme === 'cyber' ? "bg-fuchsia-600 text-white" : "bg-orange-500 text-white";
+                btn.className = `tag-btn ${highlightClass} text-xs px-3 py-2 rounded-xl border-transparent shadow-sm font-bold transition-all`;
             }
         }
 
-        // 新增自訂標籤
         function addCustomTag() {
             const input = document.getElementById('customTagInput');
             const text = input.value.trim();
@@ -284,14 +421,15 @@
             const newBtn = document.createElement('button');
             newBtn.type = 'button';
             newBtn.onclick = function() { toggleTag(this); };
-            newBtn.className = "tag-btn bg-purple-600 text-white text-xs px-3 py-2 rounded-xl border-purple-600 shadow-sm font-bold transition-all";
+            
+            const highlightClass = currentTheme === 'cyber' ? "bg-fuchsia-600 border-fuchsia-600" : "bg-purple-600 border-purple-600";
+            newBtn.className = `tag-btn ${highlightClass} text-white text-xs px-3 py-2 rounded-xl shadow-sm font-bold transition-all`;
             newBtn.innerText = tagText;
 
             container.appendChild(newBtn);
             input.value = '';
         }
 
-        // 表單儲存事件
         document.getElementById('bpForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -315,9 +453,13 @@
             const avgPulse = Math.round(totalPulse / currentMeasureCount);
             
             const activeTags = [];
-            document.querySelectorAll('.tag-btn.bg-orange-500, .tag-btn.bg-purple-600').forEach(btn => activeTags.push(btn.innerText));
+            document.querySelectorAll('.tag-btn.bg-orange-500, .tag-btn.bg-purple-600, .tag-btn.bg-fuchsia-600').forEach(btn => activeTags.push(btn.innerText));
             if (currentMeasureCount > 1) {
-                activeTags.push(currentTheme === 'god' ? `🪶 九天玄女合盤` : `📊 ${currentMeasureCount}次量測平均`);
+                let modeTag = `📊 ${currentMeasureCount}次平均`;
+                if(currentTheme === 'god') modeTag = `🪶 九天玄女合盤`;
+                if(currentTheme === 'corp') modeTag = `💼 壓力整合報告`;
+                if(currentTheme === 'cyber') modeTag = `⚡ 3軌數據流同步`;
+                activeTags.push(modeTag);
             }
 
             const newRecord = {
@@ -349,41 +491,50 @@
             }
         }
 
-        // 精靈對話邏輯判定
         function interactPet(sys, dia) {
             const avatar = document.getElementById('petAvatar');
             const speech = document.getElementById('petSpeech');
             const card = document.getElementById('petCard');
             const dict = langDict[currentTheme];
 
+            // 根據不同主題渲染對應邊框
             if (sys < 120 && dia < 80) {
-                card.className = "bg-emerald-950/40 p-4 rounded-[2rem] shadow-sm border-2 border-emerald-500/30 text-center transition-all duration-300";
-                avatar.innerText = currentTheme === 'god' ? "🧙‍♂️ 🔮 ✨" : "🧑‍⚕️ 💙 📈";
+                card.className = `${currentTheme==='cyber'?'bg-fuchsia-950/20 border-fuchsia-500/50':'bg-emerald-950/40 border-emerald-500/30'} p-4 rounded-[2rem] shadow-sm border-2 text-center transition-all duration-300`;
+                avatar.innerText = currentTheme === 'god' ? "🧙‍♂️ 🔮 ✨" : (currentTheme === 'cyber' ? "🤖 🟢 🌌" : "🧑‍⚕️ 💚 📈");
                 speech.innerText = dict.normalAdvice;
             } else if (sys >= 140 || dia >= 90) {
-                card.className = "bg-rose-950/40 p-4 rounded-[2rem] shadow-sm border-2 border-rose-500/30 text-center transition-all duration-300";
-                avatar.innerText = currentTheme === 'god' ? "👹 🛑 ⚡" : "🩺 ⚠️ 🛑";
+                card.className = `${currentTheme==='cyber'?'bg-fuchsia-950/20 border-red-500/50':'bg-rose-950/40 border-rose-500/30'} p-4 rounded-[2rem] shadow-sm border-2 text-center transition-all duration-300`;
+                avatar.innerText = currentTheme === 'god' ? "👹 🛑 ⚡" : (currentTheme === 'cyber' ? "🚨 🛑 ⚡" : "🩺 ⚠️ 🛑");
                 speech.innerText = dict.highAdvice;
             } else {
-                card.className = "bg-amber-950/40 p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center transition-all duration-300";
-                avatar.innerText = currentTheme === 'god' ? "🤨 💦 🌀" : "📊 🟡 🌀";
+                card.className = `${currentTheme==='cyber'?'bg-fuchsia-950/20 border-amber-500/50':'bg-amber-950/40 border-amber-500/30'} p-4 rounded-[2rem] shadow-sm border-2 text-center transition-all duration-300`;
+                avatar.innerText = currentTheme === 'god' ? "🤨 💦 🌀" : (currentTheme === 'cyber' ? "🤖 🟡 🌀" : "📊 🟡 🌀");
                 speech.innerText = dict.lowAdvice;
             }
         }
 
-        // 全面更新所有 UI 介面字串與樣式
         function updateUI() {
             const dict = langDict[currentTheme];
             
-            // 頂部導航切換顏色
+            // 頂部導航
             const nav = document.getElementById('navBar');
-            nav.className = `${dict.navBg} text-white pt-12 pb-6 px-4 shadow-sm rounded-b-[2rem] sticky top-0 z-50 flex items-center justify-between`;
-            
+            nav.className = `${dict.navBg} ${dict.navBorder} pt-12 pb-6 px-4 shadow-sm rounded-b-[2rem] sticky top-0 z-50 flex items-center justify-between`;
             document.getElementById('app-title').innerHTML = dict.appTitle;
-            document.getElementById('theme-btn').innerText = dict.themeBtn;
+            document.getElementById('app-title').className = `text-xl font-bold tracking-wide flex items-center gap-2 pl-2 ${dict.themeText}`;
+            
+            // 籤詩卡片
+            const fCard = document.getElementById('fortuneCard');
+            fCard.className = `${dict.cardStyle} ${dict.fortuneBorder} p-3 rounded-2xl shadow-sm text-center`;
+            document.getElementById('fortuneTitle').className = `text-xs font-bold ${dict.titleColor}`;
             document.getElementById('fortuneTitle').innerText = dict.fortuneTitle;
-            document.getElementById('petName').innerText = dict.petName;
-            document.getElementById('petAvatar').innerText = dict.petAvatar;
+            document.getElementById('fortuneText').className = `text-xs ${dict.fortuneTextColor} mt-1 font-medium`;
+
+            // 表單與卡片整體更新
+            document.getElementById('formCard').className = `${dict.cardStyle} p-5 rounded-[2rem] shadow-sm`;
+            document.getElementById('chartCard').className = `${dict.cardStyle} p-4 rounded-[2rem] shadow-sm`;
+            document.getElementById('historyCard').className = `${dict.cardStyle} p-5 rounded-[2rem] shadow-sm`;
+
+            document.getElementById('form-title').className = `text-base font-bold ${dict.formTitleColor} mb-3 flex items-center gap-1.5`;
             document.getElementById('form-title').innerText = dict.formTitle;
             document.getElementById('lbl-count-title').innerText = dict.countTitle;
             document.getElementById('btnCount1').innerText = dict.countBtn1;
@@ -393,23 +544,27 @@
             document.getElementById('customTagInput').placeholder = dict.customPlaceholder;
             document.getElementById('custom-tag-btn').innerText = dict.customBtn;
             document.getElementById('submit-btn').innerText = dict.submitBtn;
+            document.getElementById('chart-title').className = `text-base font-bold ${dict.titleColor} mb-3 flex items-center gap-1`;
             document.getElementById('chart-title').innerText = dict.chartTitle;
+            document.getElementById('history-title').className = `text-base font-bold ${dict.titleColor} flex items-center gap-1`;
             document.getElementById('history-title').innerText = dict.historyTitle;
             document.getElementById('export-btn').innerText = dict.exportBtn;
             document.getElementById('clear-btn').innerText = dict.clearBtn;
+            document.getElementById('petName').className = `text-xs font-bold ${dict.titleColor} mb-0.5`;
+            document.getElementById('petName').innerText = dict.petName;
 
-            // 如果有最新一筆數據就更新大師講話，沒有就放預設歡迎詞
             if (bpData.length > 0) {
                 interactPet(bpData[0].sys, bpData[0].dia);
             } else {
-                document.getElementById('petCard').className = "bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center";
+                document.getElementById('petCard').className = `${dict.cardStyle} p-4 rounded-[2rem] shadow-sm text-center`;
+                document.getElementById('petAvatar').innerText = dict.petAvatar;
                 document.getElementById('petSpeech').innerText = dict.petSpeech;
             }
 
             renderTags();
             setMeasureCount(currentMeasureCount);
 
-            // 渲染歷史功德簿
+            // 歷史清單渲染
             const listContainer = document.getElementById('historyList');
             if (bpData.length === 0) {
                 listContainer.innerHTML = `<p class="text-center text-gray-500 py-6 text-xs">${dict.emptyText}</p>`;
@@ -425,6 +580,14 @@
                                     if (idx === 0) prefix = '800英呎';
                                     if (idx === 1) prefix = '500英呎';
                                     if (idx === 2) prefix = '中華路降肉';
+                                } else if (currentTheme === 'corp') {
+                                    if (idx === 0) prefix = '進公司初檢';
+                                    if (idx === 1) prefix = '開會後耐壓';
+                                    if (idx === 2) prefix = '主管痛釘點';
+                                } else if (currentTheme === 'cyber') {
+                                    if (idx === 0) prefix = '一軌初掃';
+                                    if (idx === 1) prefix = '二軌複查';
+                                    if (idx === 2) prefix = '核心合盤';
                                 } else {
                                     prefix = `第 ${idx+1} 次量測`;
                                 }
@@ -443,7 +606,7 @@
                                     <p class="text-[10px] text-gray-500 font-bold flex items-center gap-1">
                                         ${r.date} ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px]">🔽 ${dict.detailArrow.split(' ')[1]}</span>` : ''}
                                     </p>
-                                    <p class="text-[11px] text-amber-400 font-bold mt-0.5">${r.tags || (currentTheme === 'god' ? '🐾 凡塵紀錄' : '🐾 常規紀錄')}</p>
+                                    <p class="text-[11px] text-amber-500 font-bold mt-0.5">${r.tags || '🐾 日常紀錄'}</p>
                                 </div>
                                 <div class="text-right">
                                     <span class="font-bold text-gray-200 text-base bg-[#2a2a2a] px-2 py-0.5 rounded-xl border border-gray-800">${r.sys}/${r.dia}</span>
@@ -456,7 +619,7 @@
                 }).join('');
             }
 
-            // 更新曲線圖表
+            // 更新折線圖
             const chartData = [...bpData].slice(0, 7).reverse();
             const labels = chartData.map(r => r.date.split(' ')[0]);
             const sysValues = chartData.map(r => r.sys);
@@ -465,13 +628,18 @@
             if (bpChart) bpChart.destroy();
 
             const ctx = document.getElementById('bpChart').getContext('2d');
+            
+            // 賽博版用粉綠配，其餘用紅藍配
+            const highColor = currentTheme === 'cyber' ? '#d946ef' : '#f87171';
+            const lowColor = currentTheme === 'cyber' ? '#22c55e' : '#60a5fa';
+
             bpChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: dict.chartLabel1, data: sysValues, borderColor: '#f87171', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#f87171' },
-                        { label: dict.chartLabel2, data: diaValues, borderColor: '#60a5fa', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#60a5fa' }
+                        { label: dict.chartLabel1, data: sysValues, borderColor: highColor, backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: highColor },
+                        { label: dict.chartLabel2, data: diaValues, borderColor: lowColor, backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: lowColor }
                     ]
                 },
                 options: {
@@ -508,15 +676,13 @@
         }
 
         function clearData() {
-            const msg = currentTheme === 'god' ? '確定要渡化清空所有好不容易存下來的健康功德紀錄嗎？🥺' : '確定要清空所有儲存的歷史血壓量測紀錄嗎？🥺';
-            if (confirm(msg)) {
+            if (confirm('確定要清空所有儲存的歷史血壓量測紀錄嗎？🥺')) {
                 bpData = [];
                 localStorage.removeItem('bpRecords');
                 updateUI();
             }
         }
 
-        // 初始化載入
         window.onload = () => {
             updateUI();
         };
