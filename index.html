@@ -2,399 +2,520 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>我的血壓小日記</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="血壓日記">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BPTracker - 血壓日記大師</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            -webkit-tap-highlight-color: transparent; 
-            font-family: 'Noto Sans TC', sans-serif;
+        :root {
+            /* 九天玄女版 顏色 */
+            --bg-god: #120c1f;
+            --card-god: #1d1433;
+            --accent-god: #ffd700;
+            --text-god: #e1d7f0;
+            --btn-god: #8a2be2;
+            
+            /* 專業醫療版 顏色 */
+            --bg-med: #121824;
+            --card-med: #1e293b;
+            --accent-med: #38bdf8;
+            --text-med: #f1f5f9;
+            --btn-med: #0284c7;
+
+            /* 預設為玄女版 */
+            --bg: var(--bg-god);
+            --card: var(--card-god);
+            --accent: var(--accent-god);
+            --text: var(--text-god);
+            --btn: var(--btn-god);
         }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+
+        /* 專業醫療版 樣式覆蓋 */
+        body.theme-medical {
+            --bg: var(--bg-med);
+            --card: var(--card-med);
+            --accent: var(--accent-med);
+            --text: var(--text-med);
+            --btn: var(--btn-med);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 頂部導航與主題切換列 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .theme-switch-btn {
+            background-color: var(--card);
+            color: var(--text);
+            border: 1px solid var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* 大師/管理師對話框 */
+        .master-box {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .master-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .master-text {
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 表單區塊 */
+        .form-card {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        input, select {
+            width: 100%;
+            background-color: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--btn);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background-color 0.2s;
+        }
+
+        /* 圖表區塊 */
+        .chart-card {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* 歷史紀錄列表 */
+        .history-card {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 32px;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .history-list {
+            list-style: none;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .item-time {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .item-bp {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .item-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pulse-badge {
+            font-size: 13px;
+            background-color: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff5b5b;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body class="bg-[#121212] text-gray-200 antialiased pb-10">
+<body>
 
-    <div class="bg-amber-600 text-white pt-12 pb-6 px-4 text-center shadow-sm rounded-b-[2rem] sticky top-0 z-50">
-        <h1 class="text-2xl font-bold tracking-wide flex items-center justify-center gap-2">
-            <span>🔮</span> 降肉大師 · 健康算命攤
-        </h1>
+    <div class="header">
+        <h1 id="app-title">🔮 九天玄女血壓算命攤</h1>
+        <button class="theme-switch-btn" id="theme-btn" onclick="toggleTheme()">切換至 專業醫療版</button>
     </div>
 
-    <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
-        
-        <div class="bg-[#1e1e1e] border-2 border-dashed border-amber-500/50 p-3 rounded-2xl shadow-sm text-center">
-            <p class="text-xs font-bold text-amber-400">☯️ 本日健康開運籤詩 ☯️</p>
-            <p id="fortuneText" class="text-xs text-amber-200/80 mt-1 font-medium">正在感應天地靈氣...</p>
-        </div>
+    <div class="master-box">
+        <div class="master-title" id="master-title">🛸 九天玄女開光開運開示</div>
+        <div class="master-text" id="master-text">恭請九天玄女駕臨！快搯指量一下今日血壓，看是凡心浮躁（血壓高）還是仙氣飄飄！</div>
+    </div>
 
-        <div id="petCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center transition-all duration-300">
-            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">🧙‍♂️</div>
-            <div class="bg-[#2a2a2a] rounded-2xl p-3 mt-3 border border-gray-800">
-                <p id="petName" class="text-xs font-bold text-amber-400 mb-0.5">命理健康大師 · 降肉</p>
-                <p id="petSpeech" class="text-xs text-gray-300 font-medium">看你面帶紅光，是不是剛剛偷跑去跟人家吵架？伸出雙臂讓本大師幫你的血管掐指一算！</p>
+    <div class="form-card">
+        <div class="form-row">
+            <div class="input-group">
+                <label for="sys" id="lbl-sys">收縮壓 (🎚️ 凡心火氣)</label>
+                <input type="number" id="sys" placeholder="mmHg" inputmode="numeric">
+            </div>
+            <div class="input-group">
+                <label for="dia" id="lbl-dia">舒張壓 (🧘 內力定力)</label>
+                <input type="number" id="dia" placeholder="mmHg" inputmode="numeric">
             </div>
         </div>
-
-        <div class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border-2 border-orange-500/20">
-            <h2 class="text-base font-bold text-orange-400 mb-3 flex items-center gap-1.5">📝 輸入本次量測</h2>
-            
-            <div class="flex items-center justify-between bg-[#2a2a2a] p-1.5 rounded-xl mb-4 border border-gray-800">
-                <span class="text-xs font-bold text-orange-400 pl-2">本座要量測幾次：</span>
-                <div class="flex space-x-1">
-                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量1次</button>
-                    <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量2次</button>
-                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-600 text-white shadow-sm">3次聖筊平均</button>
-                </div>
+        <div class="form-row">
+            <div class="input-group">
+                <label for="pulse">心跳 (💓 靈魂悸動)</label>
+                <input type="number" id="pulse" placeholder="bpm" inputmode="numeric">
             </div>
-
-            <form id="bpForm" class="space-y-4">
-                
-                <div id="inputsContainer" class="space-y-3">
-                    </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 pl-1">今日凡間心情狀態</label>
-                    <div class="flex flex-wrap gap-2 mt-1" id="tagContainer">
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">☀️ 剛睡醒清醒</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">🌙 準備躺平</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">💊 已服仙丹</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">☕ 注入咖啡因</button>
-                        <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">🌀 靈魂出竅中</button>
-                    </div>
-                    
-                    <div class="flex gap-2 mt-3">
-                        <input type="text" id="customTagInput" placeholder="輸入自訂業障（如：主管碎念）" 
-                            class="flex-1 bg-[#2a2a2a] border border-gray-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-purple-500 text-white placeholder-gray-500">
-                        <button type="button" onclick="addCustomTag()" 
-                            class="bg-purple-600 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-[0.95] transition-all">
-                            ＋開運符
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full bg-amber-600 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-amber-700 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
-                    ☯️ 恭請九天玄女開示 ☯️
-                </button>
-            </form>
-        </div>
-
-        <div class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-blue-500/10">
-            <h2 class="text-base font-bold text-blue-400 mb-3 flex items-center gap-1">📊 血管風水波浪圖</h2>
-            <div class="relative w-full h-44">
-                <canvas id="bpChart"></canvas>
+            <div class="input-group">
+                <label for="period" id="lbl-period">量測時辰 (⏳ 第幾柱香)</label>
+                <select id="period">
+                    <option value="第1柱香(起床)">第1柱香 (起床空腹)</option>
+                    <option value="第2柱香(飯後)">第2柱香 (溫飽之後)</option>
+                    <option value="第3柱香(睡前)">第3柱香 (夜深安寢)</option>
+                </select>
             </div>
         </div>
+        <button class="submit-btn" id="submit-btn" onclick="addRecord()">恭請大師開光登記 📝</button>
+    </div>
 
-        <div class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border-2 border-purple-500/10">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-base font-bold text-purple-400 flex items-center gap-1">📜 歷史健康功功德簿</h2>
-                <div class="flex space-x-1.5">
-                    <button onclick="exportCSV()" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/20">外傳CSV</button>
-                    <button onclick="clearData()" class="text-xs font-bold text-gray-400 bg-gray-500/10 px-2.5 py-1 rounded-xl border border-gray-800">渡化清空</button>
-                </div>
-            </div>
-            <div class="flow-root max-h-64 overflow-y-auto divide-y divide-gray-800" id="historyList">
-                <p class="text-center text-gray-500 py-6 text-xs">功德簿空空如也～</p>
-            </div>
-        </div>
+    <div class="chart-card">
+        <canvas id="bpChart"></canvas>
+    </div>
+
+    <div class="history-card">
+        <div class="history-title" id="history-title">📜 大師功德簿 (歷史法會紀錄)</div>
+        <ul class="history-list" id="history-list">
+            </ul>
     </div>
 
     <script>
-        let bpData = JSON.parse(localStorage.getItem('bpRecords')) || [];
-        let bpChart = null;
-        let currentMeasureCount = 3;
+        // 預設主題：god (九天玄女版), medical (專業醫療版)
+        let currentTheme = 'god';
+        let records = JSON.parse(localStorage.getItem('bp_records')) || [];
+        let chart = null;
 
-        const fortunes = [
-            "大吉 🌟 血管天庭飽滿！氣血順暢得像溜滑梯，今日宜吃大餐犒賞自己！",
-            "中吉 ☕ 量血壓前與咖啡保持三十步距離，方能避開數字調皮之災。",
-            "小吉 🦶 大師開示：量測時雙腳平放不交叉，好運自然降肉！",
-            "上上簽 🍦 心情愉悅則百病不侵，今天對鏡子裡的自己微笑三次可開運。",
-            "平安 💧 今日多喝無根水（溫開水），讓脈搏隨著微風低調打節拍。",
-            "小吉 🛌 昨晚睡得飽，血管沒煩惱！今晚子時（11點）前宜躺平就寢。"
-        ];
-
-        document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-
-        function renderInputs() {
-            const container = document.getElementById('inputsContainer');
-            let html = '';
-            for (let i = 1; i <= currentMeasureCount; i++) {
-                // 動態改寫搞笑標籤
-                let labelPrefix = '';
-                if (currentMeasureCount === 3) {
-                    if (i === 1) labelPrefix = '【800英呎】';
-                    if (i === 2) labelPrefix = '【500英呎】';
-                    if (i === 3) labelPrefix = '【 降肉！】';
-                } else if (currentMeasureCount === 2) {
-                    labelPrefix = `第 ${i} 次 - `;
-                } else {
-                    labelPrefix = '【即刻降肉】';
-                }
-
-                html += `
-                    <div class="bg-[#2a2a2a] p-3 rounded-2xl border border-orange-500/10">
-                        <div class="grid grid-cols-3 gap-2">
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}高壓</label>
-                                <input type="number" inputmode="numeric" id="sys_${i}" required placeholder="mmHg" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-orange-500">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}低壓</label>
-                                <input type="number" inputmode="numeric" id="dia_${i}" required placeholder="mmHg" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-orange-500">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}心跳</label>
-                                <input type="number" inputmode="numeric" id="pulse_${i}" required placeholder="bpm" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-orange-500">
-                            </div>
-                        </div>
-                    </div>
-                `;
+        // 語意字典
+        const langDict = {
+            god: {
+                title: "🔮 九天玄女血壓算命攤",
+                btnText: "切換至 專業醫療版 🏥",
+                masterTitle: "🛸 九天玄女開光開運開示",
+                masterWelcome: "恭請九天玄女駕臨！快搯指量一下今日血壓，看是凡心浮躁（血壓高）還是仙氣飄飄！",
+                lblSys: "收縮壓 (🎚️ 凡心火氣)",
+                lblDia: "舒張壓 (🧘 內力定力)",
+                lblPeriod: "量測時辰 (⏳ 第幾柱香)",
+                p1: "第1柱香 (起床空腹)",
+                p2: "第2柱香 (溫飽之後)",
+                p3: "第3柱香 (夜深安寢)",
+                submitBtn: "恭請大師開光登記 📝",
+                historyTitle: "📜 大師功德簿 (歷史法會紀錄)"
+            },
+            medical: {
+                title: "🏥 專業智能血壓管理系統",
+                btnText: "切換至 九天玄女版 🔮",
+                masterTitle: "🩺 專業健康管理衛教提示",
+                masterWelcome: "您好，歡迎使用血壓管理系統。請保持心情平靜，每天定時定量並記錄數值，以利健康追蹤。",
+                lblSys: "收縮壓 (Systolic)",
+                lblDia: "舒張壓 (Diastolic)",
+                lblPeriod: "量測時段 (Period)",
+                p1: "第一次 (起床空腹)",
+                p2: "第二次 (中飯/飯後)",
+                p3: "第三次 (夜間/睡前)",
+                submitBtn: "儲存本次量測紀錄 💾",
+                historyTitle: "📊 歷史血壓數據報告"
             }
-            container.innerHTML = html;
+        };
+
+        // 主題切換功能
+        function toggleTheme() {
+            if (currentTheme === 'god') {
+                currentTheme = 'medical';
+                document.body.classList.add('theme-medical');
+            } else {
+                currentTheme = 'god';
+                document.body.classList.remove('theme-medical');
+            }
+            updateUIStrings();
+            updateChartStyle();
         }
 
-        function setMeasureCount(count) {
-            currentMeasureCount = count;
-            for (let i = 1; i <= 3; i++) {
-                const btn = document.getElementById(`btnCount${i}`);
-                if (i === count) {
-                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-600 text-white shadow-sm";
-                } else {
-                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm";
-                }
+        // 更新介面文字
+        function updateUIStrings() {
+            const dict = langDict[currentTheme];
+            document.getElementById('app-title').innerText = dict.title;
+            document.getElementById('theme-btn').innerText = dict.btnText;
+            document.getElementById('master-title').innerText = dict.masterTitle;
+            document.getElementById('lbl-sys').innerText = dict.lblSys;
+            document.getElementById('lbl-dia').innerText = dict.lblDia;
+            document.getElementById('lbl-period').innerText = dict.lblPeriod;
+            document.getElementById('submit-btn').innerText = dict.submitBtn;
+            document.getElementById('history-title').innerText = dict.historyTitle;
+
+            // 更新下拉選單
+            const select = document.getElementById('period');
+            select.options[0].text = dict.p1;
+            select.options[1].text = dict.p2;
+            select.options[2].text = dict.p3;
+
+            // 如果剛開起沒有大師開示診斷，顯示預設歡迎詞
+            if(records.length === 0) {
+                document.getElementById('master-text').innerText = dict.masterWelcome;
+            } else {
+                generateMasterAdvice(records[0]); // 根據最新一筆數據重新給予當前主題的開示
             }
-            renderInputs();
+            renderRecords();
         }
 
-        document.getElementById('bpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let totalSys = 0, totalDia = 0, totalPulse = 0;
-            let detailRecords = [];
+        // 大師與管理師的診斷開示邏輯
+        function generateMasterAdvice(record) {
+            const sys = parseInt(record.sys);
+            const dia = parseInt(record.dia);
+            let status = "normal";
 
-            for (let i = 1; i <= currentMeasureCount; i++) {
-                const sys = parseInt(document.getElementById(`sys_${i}`).value);
-                const dia = parseInt(document.getElementById(`dia_${i}`).value);
-                const pulse = parseInt(document.getElementById(`pulse_${i}`).value);
-                
-                totalSys += sys;
-                totalDia += dia; 
-                totalPulse += pulse;
+            if (sys >= 140 || dia >= 90) status = "high";
+            else if (sys < 90 || dia < 60) status = "low";
 
-                detailRecords.push({ sys, dia, pulse });
-            }
-
-            const avgSys = Math.round(totalSys / currentMeasureCount);
-            const avgDia = Math.round(totalDia / currentMeasureCount);
-            const avgPulse = Math.round(totalPulse / currentMeasureCount);
-            
-            const activeTags = [];
-            document.querySelectorAll('.tag-btn.bg-orange-500, .tag-btn.bg-purple-600').forEach(btn => activeTags.push(btn.innerText));
-            if (currentMeasureCount > 1) activeTags.push(`🪶 九天玄女合盤`);
-
-            const newRecord = {
-                id: Date.now(),
-                date: new Date().toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                sys: avgSys,
-                dia: avgDia,
-                pulse: avgPulse,
-                tags: activeTags.join(' '),
-                details: detailRecords
+            const adviceDict = {
+                god: {
+                    high: `💥 夭壽！凡心大動、火氣罡風高達 ${sys}！九天玄女警告：這不是降肉，這是血壓在噴發！快去喝口水、打坐，休得浮躁！`,
+                    low: `🍃 仙氣太飄、內力弱化 (${sys}/${dia})！施主是不是剛修煉完忘記吃飯？飄飄欲仙容易頭暈，快去補點凡間五穀！`,
+                    normal: `✨ 善哉善哉！${sys}/${dia} 氣場四平八穩。四海八荒皆在掌控之中，繼續保持法身清淨！`
+                },
+                medical: {
+                    high: `⚠️ 警告：目前血壓值 (${sys}/${dia} mmHg) 偏高，已達高血壓警戒範圍。請避免劇烈運動，適度休息，並遵照醫囑管理。`,
+                    low: `⚠️ 提示：目前血壓值 (${sys}/${dia} mmHg) 偏低。如伴隨頭暈、乏力，請坐下休息，適時補充水分與營養。`,
+                    normal: `✅ 優良：目前血壓值 (${sys}/${dia} mmHg) 處於正常標準範圍。請繼續保持規律的作息與健康飲食。`
+                }
             };
 
-            bpData.unshift(newRecord);
-            localStorage.setItem('bpRecords', JSON.stringify(bpData));
+            document.getElementById('master-text').innerText = adviceDict[currentTheme][status];
+        }
 
-            interactPet(avgSys, avgDia);
-            updateUI();
+        // 新增紀錄
+        function addRecord() {
+            const sys = document.getElementById('sys').value;
+            const dia = document.getElementById('dia').value;
+            const pulse = document.getElementById('pulse').value;
+            const period = document.getElementById('period').value;
+
+            if (!sys || !dia || !pulse) {
+                alert(currentTheme === 'god' ? "大師提醒：數值不可留白，否則無法算命！" : "系統提示：請完整輸入所有量測數值。");
+                return;
+            }
+
+            const now = new Date();
+            const timeStr = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newRecord = { id: Date.now(), sys, dia, pulse, period, time: timeStr };
+            records.unshift(newRecord);
+            localStorage.setItem('bp_records', JSON.stringify(records));
+
+            // 清空輸入
+            document.getElementById('sys').value = '';
+            document.getElementById('dia').value = '';
+            document.getElementById('pulse').value = '';
+
+            generateMasterAdvice(newRecord);
+            renderRecords();
+            updateChart();
+        }
+
+        // 刪除紀錄
+        function deleteRecord(id) {
+            if(confirm(currentTheme === 'god' ? "確定要將此道功德法會紀錄抹去？" : "確定要刪除此筆量測紀錄？")) {
+                records = records.filter(r => r.id !== id);
+                localStorage.setItem('bp_records', JSON.stringify(records));
+                if(records.length > 0) generateMasterAdvice(records[0]);
+                else document.getElementById('master-text').innerText = langDict[currentTheme].masterWelcome;
+                renderRecords();
+                updateChart();
+            }
+        }
+
+        // 渲染歷史清單
+        function renderRecords() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
             
-            document.getElementById('tagContainer').innerHTML = `
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">☀️ 剛睡醒清醒</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">🌙 準備躺平</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">💊 已服仙丹</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">☕ 注入咖啡因</button>
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">🌀 靈魂出竅中</button>
-            `;
-            setMeasureCount(currentMeasureCount);
-        });
+            records.forEach(r => {
+                // 轉換時段顯示文字
+                let displayPeriod = r.period;
+                if (currentTheme === 'medical') {
+                    if(r.period.includes("第1柱香")) displayPeriod = "起床空腹";
+                    else if(r.period.includes("第2柱香")) displayPeriod = "中飯/飯後";
+                    else if(r.period.includes("第3柱香")) displayPeriod = "夜間/睡前";
+                }
 
-        function toggleTag(btn) {
-            const isCustom = btn.classList.contains('border-purple-500/40') || btn.classList.contains('bg-purple-600');
-            if (btn.classList.contains('bg-orange-500') || btn.classList.contains('bg-purple-600')) {
-                btn.className = isCustom 
-                    ? "tag-btn bg-purple-900/30 text-purple-400 text-xs px-3 py-2 rounded-xl border border-purple-500/40 transition-all"
-                    : "tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all";
-            } else {
-                btn.className = isCustom
-                    ? "tag-btn bg-purple-600 text-white text-xs px-3 py-2 rounded-xl border-purple-600 shadow-sm font-bold transition-all"
-                    : "tag-btn bg-orange-500 text-white text-xs px-3 py-2 rounded-xl border-orange-500 shadow-sm font-bold transition-all";
-            }
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.innerHTML = `
+                    <div class="item-left">
+                        <span class="item-time">${r.time} • ${displayPeriod}</span>
+                        <span class="item-bp">${r.sys} / ${r.dia} <small style="font-weight:normal; font-size:12px; color:rgba(255,255,255,0.6)">mmHg</small></span>
+                    </div>
+                    <div class="item-right">
+                        <span class="pulse-badge">💓 ${r.pulse}</span>
+                        <button class="delete-btn" onclick="deleteRecord(${r.id})">${currentTheme==='god'?'渡化':'刪除'}</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
         }
 
-        function addCustomTag() {
-            const input = document.getElementById('customTagInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const tagText = text.startsWith('#') ? text : '#' + text;
-            const container = document.getElementById('tagContainer');
-            const newBtn = document.createElement('button');
-            newBtn.type = 'button';
-            newBtn.onclick = function() { toggleTag(this); };
-            newBtn.className = "tag-btn bg-purple-600 text-white text-xs px-3 py-2 rounded-xl border-purple-600 shadow-sm font-bold transition-all";
-            newBtn.innerText = tagText;
-
-            container.appendChild(newBtn);
-            input.value = '';
-        }
-
-        function toggleDetail(id) {
-            const el = document.getElementById(`detail-${id}`);
-            const arrow = document.getElementById(`arrow-${id}`);
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-                arrow.innerText = '🔼';
-            } else {
-                el.classList.add('hidden');
-                arrow.innerText = '🔽';
-            }
-        }
-
-        function interactPet(sys, dia) {
-            const avatar = document.getElementById('petAvatar');
-            const speech = document.getElementById('petSpeech');
-            const card = document.getElementById('petCard');
-
-            if (sys < 120 && dia < 80) {
-                card.className = "bg-emerald-950/40 p-4 rounded-[2rem] shadow-sm border-2 border-emerald-500/30 text-center transition-all duration-300";
-                avatar.innerText = "🧙‍♂️ 🔮 ✨";
-                speech.innerText = "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康功德人！";
-            } else if (sys >= 140 || dia >= 90) {
-                card.className = "bg-rose-950/40 p-4 rounded-[2rem] shadow-sm border-2 border-rose-500/30 text-center transition-all duration-300";
-                avatar.innerText = "👹 🛑 ⚡";
-                speech.innerText = "大事不妙！血壓怪獸九天玄女降肉了！施主你這數字在發爐啊！快去旁邊靜坐10分鐘重測，切莫浮躁！";
-            } else {
-                card.className = "bg-amber-950/40 p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center transition-all duration-300";
-                avatar.innerText = "🤨 💦 🌀";
-                speech.innerText = "嗯...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人或凡間雜事太多？記得提早躺平！";
-            }
-        }
-
-        function updateUI() {
-            const listContainer = document.getElementById('historyList');
-            if (bpData.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-gray-500 py-6 text-xs">功德簿空空如也～</p>';
-            } else {
-                listContainer.innerHTML = bpData.map(r => {
-                    let detailsHtml = '';
-                    if (r.details && r.details.length > 1) {
-                        detailsHtml = `<div id="detail-${r.id}" class="hidden mt-1.5 p-2 bg-[#2a2a2a] rounded-xl text-[11px] text-gray-400 space-y-0.5 border border-gray-800">`;
-                        r.details.forEach((d, idx) => {
-                            let prefix = '';
-                            if (r.details.length === 3) {
-                                if (idx === 0) prefix = '800英呎';
-                                if (idx === 1) prefix = '500英呎';
-                                if (idx === 2) prefix = '中華路降肉';
-                            } else {
-                                prefix = `第 ${idx+1} 次`;
-                            }
-                            detailsHtml += `<p>${prefix}：高壓 <span class="font-bold text-orange-400">${d.sys}</span> / 低壓 <span class="font-bold text-orange-400">${d.dia}</span> / 心跳 <span class="font-bold text-orange-400">${d.pulse}</span></p>`;
-                        });
-                        detailsHtml += `</div>`;
-                    }
-
-                    return `
-                        <div class="py-3 divide-y divide-transparent">
-                            <div class="flex justify-between items-center text-sm">
-                                <div onclick="${r.details && r.details.length > 1 ? `toggleDetail(${r.id})` : ''}" class="cursor-pointer">
-                                    <p class="text-[10px] text-gray-500 font-bold flex items-center gap-1">
-                                        ${r.date} ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px]">🔽 顯現各路英呎</span>` : ''}
-                                    </p>
-                                    <p class="text-[11px] text-amber-400 font-bold mt-0.5">${r.tags || '🐾 凡塵紀錄'}</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="font-bold text-gray-200 text-base bg-[#2a2a2a] px-2 py-0.5 rounded-xl border border-gray-800">${r.sys}/${r.dia}</span>
-                                    <span class="text-xs text-gray-500 ml-1">💓 ${r.pulse}</span>
-                                </div>
-                            </div>
-                            ${detailsHtml}
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            const chartData = [...bpData].slice(0, 7).reverse();
-            const labels = chartData.map(r => r.date.split(' ')[0]);
-            const sysValues = chartData.map(r => r.sys);
-            const diaValues = chartData.map(r => r.dia);
-
-            if (bpChart) bpChart.destroy();
-
+        // 圖表初始化與更新
+        function initChart() {
             const ctx = document.getElementById('bpChart').getContext('2d');
-            bpChart = new Chart(ctx, {
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+            
+            chart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: '平均高壓', data: sysValues, borderColor: '#f87171', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#f87171' },
-                        { label: '平均低壓', data: diaValues, borderColor: '#60a5fa', backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: '#60a5fa' }
-                    ]
-                },
+                data: { labels: [], datasets: [] },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { labels: { boxWidth: 8, color: '#9ca3af', font: { size: 10, weight: 'bold' } } } 
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
                     },
-                    scales: { 
-                        y: { ticks: { color: '#6b7280', font: { size: 9 } }, grid: { color: '#2a2a2a' } }, 
-                        x: { ticks: { color: '#6b7280', font: { size: 9 } }, grid: { display: false } } 
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.6)' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.6)' } }
                     }
                 }
             });
+            updateChart();
         }
 
-        function exportCSV() {
-            if(bpData.length === 0) return alert('功功德簿空無一物，無法外傳');
-            let csvContent = "\uFEFF日期時間,平均高壓,平均低壓,平均心跳,心情標籤,詳細各次紀錄\n";
-            bpData.forEach(r => { 
-                let detailsStr = '';
-                if(r.details) {
-                    detailsStr = r.details.map((d, i) => `[第${i+1}次:${d.sys}/${d.dia}/${d.pulse}]`).join(' ');
+        function updateChart() {
+            if(!chart) return;
+            // 取最近 7 筆由舊到新排列展示
+            const displayRecords = [...records].slice(0, 7).reverse();
+            
+            chart.data.labels = displayRecords.map(r => r.time.split(' ')[0]); // 只留日期
+            chart.data.datasets = [
+                {
+                    label: currentTheme === 'god' ? '凡心火氣(收縮壓)' : '收縮壓 (SYS)',
+                    data: displayRecords.map(r => r.sys),
+                    borderColor: '#ff5b5b',
+                    backgroundColor: 'rgba(255, 91, 91, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: currentTheme === 'god' ? '內力定力(舒張壓)' : '舒張壓 (DIA)',
+                    data: displayRecords.map(r => r.dia),
+                    borderColor: currentTheme === 'god' ? '#ffd700' : '#38bdf8',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
                 }
-                csvContent += `${r.date},${r.sys},${r.dia},${r.pulse},${r.tags},${detailsStr}\n`; 
-            });
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `降肉大師功功德簿_${new Date().toLocaleDateString()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            ];
+            chart.update();
         }
 
-        function clearData() {
-            if (confirm('確定要渡化清空所有好不容易存下來的健康功德紀錄嗎？🥺')) {
-                bpData = [];
-                localStorage.removeItem('bpRecords');
-                document.getElementById('petCard').className = "bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border-2 border-amber-500/30 text-center";
-                document.getElementById('petAvatar').innerText = "🧙‍♂️";
-                document.getElementById('petSpeech').innerText = "一切皆空～因果重來！今天起再重新累積功德吧！";
-                updateUI();
-            }
+        function updateChartStyle() {
+            if(!chart) return;
+            chart.options.plugins.legend.labels.color = currentTheme === 'god' ? '#e1d7f0' : '#f1f5f9';
+            updateChart();
         }
 
-        setMeasureCount(3);
+        // 初始化啟動
+        window.onload = () => {
+            updateUIStrings();
+            initChart();
+        };
     </script>
 </body>
 </html>
