@@ -22,11 +22,9 @@
             -webkit-backdrop-filter: blur(20px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* 隱藏滾動條但保持功能 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* 柔和脈衝動畫 */
         @keyframes subtlePulse {
             0%, 100% { transform: scale(1); opacity: 0.95; }
             50% { transform: scale(1.02); opacity: 1; }
@@ -130,7 +128,6 @@
 
     <script>
         let currentTheme = 'classic';
-        // 🛠️ 數據傳承核心：精準保留最珍貴的舊鑰匙！
         let bpData = JSON.parse(localStorage.getItem('bpRecords')) || [];
         let bpChart = null;
         let currentMeasureCount = 3;
@@ -166,11 +163,12 @@
                 clearBtn: "清空",
                 emptyText: "尚無歷史數據紀錄",
                 detailArrow: "🔽 展開各次細節",
-                detailPrefix: "第",
                 glassStyle: "rgba(30, 30, 30, 0.75)",
                 normalAdvice: "量測完成。數值非常標準！請繼續保持均衡飲食與規律作息，加油！",
                 highAdvice: "提醒：目前平均血壓數值偏高。建議您稍作休息5-10分鐘後重測。若持續偏高，請諮詢專業醫師。",
-                lowAdvice: "提示：目前平均血壓數值稍微偏低。若有頭暈、全身無力症狀，請立刻坐下休息並適度補充水分。"
+                lowAdvice: "提示：目前平均血壓數值稍微偏低。若有頭暈、全身無力症狀，請立刻坐下休息並適度補充水分。",
+                alertRange: "⚠️ 請輸入有效的合理量測數值：\n收縮壓(高壓)需在 50~250 之間\n舒張壓(低壓)需在 30~180 之間",
+                confirmClear: "確定要格式化清空所有歷史血壓紀錄嗎？🥺\n(此動作將徹底刪除您裝置本機中的所有隱私數據)"
             },
             god: {
                 appTitle: "降肉大師 · 血管算命攤",
@@ -202,11 +200,12 @@
                 clearBtn: "渡化",
                 emptyText: "功德簿空空如也～",
                 detailArrow: "🔽 顯現各路英呎",
-                detailPrefix: "英呎",
                 glassStyle: "rgba(55, 35, 25, 0.85)",
                 normalAdvice: "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康功德人！",
                 highAdvice: "大事不妙！血壓怪獸九天玄女降肉了！施主你這數字在發爐啊！快去旁邊靜坐10分鐘，切莫浮躁！",
-                lowAdvice: "恩...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人？記得提早躺平！"
+                lowAdvice: "恩...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人？記得提早躺平！",
+                alertRange: "🔮 稟告施主：輸入的數值超出凡人肉身極限！\n高壓請在 50~250，低壓請在 30~180。切勿逆天輸入！",
+                confirmClear: "確定要將歷史健康功德簿功德圓滿、原地渡化清空嗎？☯️"
             },
             medical: {
                 appTitle: "臨床血壓管理系統",
@@ -238,11 +237,12 @@
                 clearBtn: "清空",
                 emptyText: "目前尚無任何血壓數據紀錄",
                 detailArrow: "🔽 展開各次量測細節",
-                detailPrefix: "量測",
                 glassStyle: "rgba(18, 30, 48, 0.85)",
                 normalAdvice: "非常優秀！本次量測的平均血壓完全符合國際標準。請繼續保持良好的生活作息與低鈉飲食。",
                 highAdvice: "請注意：本次平均數值偏高，已進入高血壓警戒範圍。請立刻坐下休息、喝杯溫水，若持續偏高請諮詢醫師。",
-                lowAdvice: "提示：目前量測的平均血壓數值稍微偏低。若您伴隨有頭暈或無力感，請多加留意並適時補充水分。"
+                lowAdvice: "提示：目前量測的平均血壓數值稍微偏低。若您伴隨有頭暈或無力感，請多加留意並適時補充水分。",
+                alertRange: "🔬 臨床錯誤：輸入數值不符合生理邏輯限制。\n收縮壓(SYS)範圍：50~250 mmHg\n舒張壓(DIA)範圍：30~180 mmHg",
+                confirmClear: "警告：確定要永久刪除所有儲存的臨床歷史數據紀錄嗎？"
             },
             corp: {
                 appTitle: "科技業社畜求生儀表板",
@@ -274,11 +274,12 @@
                 clearBtn: "光速離職",
                 emptyText: "目前沒有任何被蹂躪的紀錄",
                 detailArrow: "🔽 顯現每次被釘細節",
-                detailPrefix: "被釘第",
                 glassStyle: "rgba(15, 35, 32, 0.85)",
                 normalAdvice: "平均數據安全合格。看來今天沒被豬隊友氣到，血管通暢，特准你立刻下班去買杯珍奶續命！",
                 highAdvice: "緊急警報！血壓直接衝破季度 KPI 了！別拿公司的薪水懲罰血管，現在立刻去茶水間摸魚10分鐘！",
-                lowAdvice: "偵測到核心動力嚴重下滑。是不是又在做沒產值的雜事了？今晚宜強制登出拒絕加班！"
+                lowAdvice: "偵測到核心動力嚴重下滑。是不是又在做沒產值的雜事了？今晚宜強制登出拒減班！",
+                alertRange: "💼 逼逼！Bug提報！數據不合常理！\n高壓必須在 50~250，低壓必須在 30~180。請重新輸入。",
+                confirmClear: "一鍵清除所有加班揉躪歷史（光速離職抹除所有記憶）？"
             },
             cyber: {
                 appTitle: "賽博人體效能檢測站",
@@ -310,11 +311,12 @@
                 clearBtn: "格式化磁碟",
                 emptyText: "儲存核心內沒有任何機體參數",
                 detailArrow: "🔽 解碼各軌道數據",
-                detailPrefix: "軌道",
                 glassStyle: "rgba(24, 10, 32, 0.85)",
                 normalAdvice: "核心水冷管線壓力完全符合出廠設定。系統效能極大化，准予繼續執行凡塵地表任務。",
                 highAdvice: "核心管路壓力超載臨界！主幫浦高壓異常超頻！偵測到硬體嚴重過熱，請立刻啟動安全降載躺平機制！",
-                lowAdvice: "警報：偵測到核心傳導幫浦功率偏低，流體交互速度遲緩。請立即接入能源並進入低能耗休眠。"
+                lowAdvice: "警報：偵測到核心傳導幫浦功率偏低，流體交互速度遲緩。請立即接入能源並進入低能耗休眠。",
+                alertRange: "⚡ 系統錯誤：硬體傳入參數溢出核心耐壓網格！\n主幫浦限制：50~250，副管路限制：30~180。",
+                confirmClear: "警告：即將徹底格式化黑匣子核心磁碟！確認清除所有機體紀錄？"
             }
         };
 
@@ -336,7 +338,6 @@
         function renderInputs() {
             const container = document.getElementById('inputsContainer');
             let html = '';
-            const dict = langDict[currentTheme];
 
             for (let i = 1; i <= currentMeasureCount; i++) {
                 let labelPrefix = '';
@@ -449,11 +450,18 @@
             let totalSys = 0, totalDia = 0, totalPulse = 0;
             let detailRecords = [];
 
+            // 🚀 核心優化：增加防錯機制，防止無效數據損壞圖表
             for (let i = 1; i <= currentMeasureCount; i++) {
                 const sys = parseInt(document.getElementById(`sys_${i}`).value);
                 const dia = parseInt(document.getElementById(`dia_${i}`).value);
                 const pulse = parseInt(document.getElementById(`pulse_${i}`).value);
                 
+                // 數據安全校驗範圍：高壓限制 50~250，低壓限制 30~180
+                if (sys < 50 || sys > 250 || dia < 30 || dia > 180) {
+                    alert(langDict[currentTheme].alertRange);
+                    return; // 強制阻擋阻斷提交
+                }
+
                 totalSys += sys;
                 totalDia += dia; 
                 totalPulse += pulse;
@@ -486,7 +494,6 @@
             };
 
             bpData.unshift(newRecord);
-            // 🛠️ 舊資料對齊：完美使用 bpRecords
             localStorage.setItem('bpRecords', JSON.stringify(bpData));
 
             interactPet(avgSys, avgDia);
@@ -529,7 +536,6 @@
         function updateUI() {
             const dict = langDict[currentTheme];
             
-            // 全域毛玻璃背景色調更換
             const glasses = document.querySelectorAll('.app-glass');
             glasses.forEach(el => {
                 el.style.backgroundColor = dict.glassStyle;
@@ -569,7 +575,6 @@
             renderTags();
             setMeasureCount(currentMeasureCount);
 
-            // 歷史列表 App 化渲染
             const listContainer = document.getElementById('historyList');
             if (bpData.length === 0) {
                 listContainer.innerHTML = `<p class="text-center text-gray-500 py-8 text-xs">${dict.emptyText}</p>`;
@@ -600,7 +605,6 @@
                         detailsHtml += `</div>`;
                     }
 
-                    // 高級感卡片行設計
                     return `
                         <div class="py-3.5 transition-all">
                             <div class="flex justify-between items-center">
@@ -626,7 +630,6 @@
                 }).join('');
             }
 
-            // Chart.js 上架色調校正
             const chartData = [...bpData].slice(0, 7).reverse();
             const labels = chartData.map(r => r.date.split(' ')[0]);
             const sysValues = chartData.map(r => r.sys);
@@ -684,8 +687,9 @@
             document.body.removeChild(link);
         }
 
+        // 🚀 隱私安全優化：清空提示語符合 Apple 關於隱私數據自主控制的合規政策
         function clearData() {
-            if (confirm('確定要格式化清空所有歷史血壓紀錄嗎？🥺')) {
+            if (confirm(langDict[currentTheme].confirmClear)) {
                 bpData = [];
                 localStorage.removeItem('bpRecords');
                 updateUI();
