@@ -3,253 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>我的血壓小日記</title>
+    <title>血壓日記 App Pro</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="血壓日記">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body { 
             -webkit-tap-highlight-color: transparent; 
-            font-family: 'Noto Sans TC', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
+            font-family: -apple-system, 'SF Pro Display', 'Noto Sans TC', sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            user-select: none;
         }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        .app-glass {
+            background: rgba(30, 30, 30, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* 隱藏滾動條但保持功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 柔和脈衝動畫 */
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); opacity: 0.95; }
+            50% { transform: scale(1.02); opacity: 1; }
+        }
+        .pulse-effect { animation: subtlePulse 3s infinite ease-in-out; }
     </style>
 </head>
-<body class="bg-[#121212] text-gray-200 antialiased pb-10">
+<body class="bg-[#0b0b0c] text-[#f3f4f6] antialiased pb-12">
 
-    <div id="navBar" class="bg-[#1e1e1e] text-white pt-12 pb-6 px-4 shadow-sm rounded-b-[2rem] sticky top-0 z-50 flex items-center justify-between border-b border-gray-800">
-        <h1 id="app-title" class="text-xl font-bold tracking-wide flex items-center gap-2 pl-2 text-gray-100">
-            <span>🖤</span> 預設經典 · 血壓日記
-        </h1>
-        <select id="themeSelector" onchange="selectTheme(this.value)" class="text-xs font-bold bg-[#2a2a2a] text-gray-200 border border-gray-700 px-3 py-1.5 rounded-full shadow-sm mr-2 active:scale-95 transition-all outline-none">
-            <option value="classic">🖤 預設經典版</option>
-            <option value="god">🔮 九天玄女版</option>
-            <option value="medical">🏥 專業醫療版</option>
-            <option value="corp">💼 社畜求生版</option>
-            <option value="cyber">⚡ 賽博超頻版</option>
-        </select>
+    <div id="navBar" class="sticky top-0 z-50 pt-14 pb-5 px-6 rounded-b-[2.5rem] app-glass border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.4)] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div id="app-icon" class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl bg-gradient-to-tr from-rose-500 to-orange-400 shadow-md shadow-rose-500/20">❤️</div>
+            <div>
+                <h1 id="app-title" class="text-lg font-bold tracking-tight text-white">血壓日記 Pro</h1>
+                <p class="text-[10px] text-gray-400 font-medium tracking-wider uppercase" id="app-subtitle">Daily Health Tracker</p>
+            </div>
+        </div>
+        <div class="relative">
+            <select id="themeSelector" onchange="selectTheme(this.value)" class="text-xs font-semibold bg-white/[0.08] text-white border border-white/[0.12] pl-3 pr-8 py-2 rounded-2xl shadow-sm outline-none appearance-none cursor-pointer focus:border-rose-500/50 transition-all">
+                <option value="classic">🖤 預設經典</option>
+                <option value="god">🔮 玄女降肉</option>
+                <option value="medical">🏥 專業醫療</option>
+                <option value="corp">💼 社畜續命</option>
+                <option value="cyber">⚡ 賽博超頻</option>
+            </select>
+            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400 text-[10px]">▼</div>
+        </div>
     </div>
 
-    <div class="max-w-md mx-auto px-4 mt-4 space-y-5">
+    <div class="max-w-md mx-auto px-5 mt-6 space-y-6">
         
-        <div id="fortuneCard" class="bg-[#1e1e1e] border-2 border-dashed border-gray-700 p-3 rounded-2xl shadow-sm text-center">
-            <p id="fortuneTitle" class="text-xs font-bold text-gray-400">💡 本日健康小貼士 💡</p>
-            <p id="fortuneText" class="text-xs text-gray-400 mt-1 font-medium">正在載入健康數據中...</p>
+        <div id="fortuneCard" class="p-4 rounded-3xl app-glass border border-white/[0.06] shadow-sm relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 text-6xl opacity-5 select-none" id="fortuneBgIcon">💡</div>
+            <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-xs" id="fortuneDot">✨</span>
+                <p id="fortuneTitle" class="text-xs font-bold tracking-wider text-gray-400 uppercase">本日健康智慧</p>
+            </div>
+            <p id="fortuneText" class="text-xs text-gray-300 font-normal leading-relaxed">正在為您同步機體與脈搏頻率...</p>
         </div>
 
-        <div id="petCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border border-gray-800 text-center transition-all duration-300">
-            <div id="petAvatar" class="text-5xl animate-bounce duration-1000">📊</div>
-            <div class="bg-[#2a2a2a] rounded-2xl p-3 mt-3 border border-gray-800">
-                <p id="petName" class="text-xs font-bold text-gray-400 mb-0.5">智能健康助理</p>
-                <p id="petSpeech" class="text-xs text-gray-300 font-medium">歡迎使用。準備好測量血壓了嗎？請綁好袖帶，靜心坐穩後開始輸入數據。</p>
+        <div id="petCard" class="p-5 rounded-[2.5rem] app-glass border border-white/[0.06] flex items-center gap-4 transition-all duration-300">
+            <div id="petAvatar" class="text-4xl p-3 bg-white/[0.04] rounded-2xl pulse-effect">📊</div>
+            <div class="flex-1 min-w-0">
+                <p id="petName" class="text-xs font-bold text-gray-400">智能健康管理導師</p>
+                <p id="petSpeech" class="text-xs text-gray-300 mt-1 font-normal leading-relaxed">歡迎回來。量血壓前請放鬆，雙腳著地不交叉，讓我們開始點滴追蹤血管健康。</p>
             </div>
         </div>
 
-        <div id="formCard" class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border border-gray-800">
-            <h2 id="form-title" class="text-base font-bold text-gray-200 mb-3 flex items-center gap-1.5">📝 輸入本次量測數據</h2>
+        <div id="formCard" class="p-6 rounded-[2.5rem] app-glass border border-white/[0.06] shadow-xl">
+            <h2 id="form-title" class="text-base font-bold text-white mb-4 flex items-center gap-2">📝 登錄量測數據</h2>
             
-            <div class="flex items-center justify-between bg-[#2a2a2a] p-1.5 rounded-xl mb-4 border border-gray-800">
-                <span id="lbl-count-title" class="text-xs font-bold text-gray-400 pl-2">選擇量測模式：</span>
-                <div class="flex space-x-1">
-                    <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量1次</button>
-                    <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm">量2次</button>
-                    <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-gray-700 text-white shadow-sm">3次平均值</button>
-                </div>
+            <div class="grid grid-cols-3 bg-black/40 p-1 rounded-2xl mb-5 border border-white/[0.04]">
+                <button type="button" onclick="setMeasureCount(1)" id="btnCount1" class="text-xs py-2 rounded-xl font-medium transition-all text-gray-400">單次量測</button>
+                <button type="button" onclick="setMeasureCount(2)" id="btnCount2" class="text-xs py-2 rounded-xl font-medium transition-all text-gray-400">連續2次</button>
+                <button type="button" onclick="setMeasureCount(3)" id="btnCount3" class="text-xs py-2 rounded-xl font-semibold transition-all bg-white/[0.12] text-white shadow-md">3次平均值</button>
             </div>
 
-            <form id="bpForm" class="space-y-4">
-                
-                <div id="inputsContainer" class="space-y-3">
-                    </div>
+            <form id="bpForm" class="space-y-5">
+                <div id="inputsContainer" class="space-y-3"></div>
 
-                <div>
-                    <label id="lbl-mood-title" class="block text-xs font-bold text-gray-400 mb-1 pl-1">當前身體/心情狀態</label>
-                    <div class="flex flex-wrap gap-2 mt-1" id="tagContainer">
-                        </div>
+                <div class="pt-2">
+                    <label id="lbl-mood-title" class="block text-xs font-bold text-gray-400 mb-2.5 pl-1">當前身體 / 心情狀態</label>
+                    <div class="flex flex-wrap gap-2 no-scrollbar max-h-24 overflow-y-auto pb-1" id="tagContainer"></div>
                     
-                    <div class="flex gap-2 mt-3">
-                        <input type="text" id="customTagInput" placeholder="輸入自訂備註狀態" 
-                            class="flex-1 bg-[#2a2a2a] border border-gray-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-gray-500 text-white placeholder-gray-500">
+                    <div class="flex gap-2 mt-4 bg-black/30 p-1.5 rounded-2xl border border-white/[0.05] focus-within:border-rose-500/30 transition-all">
+                        <input type="text" id="customTagInput" placeholder="輸入自訂備註..." 
+                            class="flex-1 bg-transparent px-3 py-1.5 text-xs text-white placeholder-gray-500 outline-none">
                         <button type="button" onclick="addCustomTag()" id="custom-tag-btn"
-                            class="bg-gray-700 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-[0.95] transition-all">
-                            ＋新增備註
+                            class="bg-white/[0.08] text-white hover:bg-white/[0.15] active:scale-95 font-semibold text-xs px-4 py-1.5 rounded-xl transition-all shadow-sm">
+                            ＋新增
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" id="submit-btn" class="w-full bg-gray-700 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-gray-600 active:scale-[0.97] transition-all text-sm mt-2 tracking-wider">
+                <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-rose-500 to-orange-500 text-white font-bold py-4 rounded-2xl shadow-[0_4px_20px_rgba(244,63,94,0.2)] hover:opacity-95 active:scale-[0.97] transition-all text-sm mt-3 tracking-wide">
                     儲存本次健康數據
                 </button>
             </form>
         </div>
 
-        <div id="chartCard" class="bg-[#1e1e1e] p-4 rounded-[2rem] shadow-sm border border-gray-800">
-            <h2 id="chart-title" class="text-base font-bold text-gray-300 mb-3 flex items-center gap-1">📊 歷史趨勢折線圖</h2>
-            <div class="relative w-full h-44">
+        <div id="chartCard" class="p-5 rounded-[2.5rem] app-glass border border-white/[0.06] shadow-lg">
+            <h2 id="chart-title" class="text-base font-bold text-gray-200 mb-4 flex items-center gap-2">📊 歷史趨勢折線圖</h2>
+            <div class="relative w-full h-48">
                 <canvas id="bpChart"></canvas>
             </div>
         </div>
 
-        <div id="historyCard" class="bg-[#1e1e1e] p-5 rounded-[2rem] shadow-sm border border-gray-800">
-            <div class="flex justify-between items-center mb-3">
-                <h2 id="history-title" class="text-base font-bold text-gray-300 flex items-center gap-1">📜 歷史健康數據日誌</h2>
-                <div class="flex space-x-1.5">
-                    <button onclick="exportCSV()" id="export-btn" class="text-xs font-bold text-gray-300 bg-gray-800 px-2.5 py-1 rounded-xl border border-gray-700">匯出CSV</button>
-                    <button onclick="clearData()" id="clear-btn" class="text-xs font-bold text-gray-500 bg-gray-900 px-2.5 py-1 rounded-xl border border-gray-800">清空數據</button>
+        <div id="historyCard" class="p-6 rounded-[2.5rem] app-glass border border-white/[0.06] shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="history-title" class="text-base font-bold text-gray-200 flex items-center gap-2">📜 歷史健康數據日誌</h2>
+                <div class="flex space-x-2">
+                    <button onclick="exportCSV()" id="export-btn" class="text-[11px] font-semibold text-gray-300 bg-white/[0.06] border border-white/[0.06] px-3 py-1.5 rounded-xl active:scale-95 transition-all">匯出 CSV</button>
+                    <button onclick="clearData()" id="clear-btn" class="text-[11px] font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/10 px-3 py-1.5 rounded-xl active:scale-95 transition-all">清空</button>
                 </div>
             </div>
-            <div class="flow-root max-h-64 overflow-y-auto divide-y divide-gray-800" id="historyList">
-                <p class="text-center text-gray-500 py-6 text-xs">尚無歷史數據紀錄</p>
+            <div class="flow-root max-h-72 overflow-y-auto no-scrollbar divide-y divide-white/[0.05]" id="historyList">
+                <p class="text-center text-gray-500 py-8 text-xs">尚無歷史數據紀錄</p>
             </div>
         </div>
     </div>
 
     <script>
         let currentTheme = 'classic';
+        // 🛠️ 數據傳承核心：精準保留最珍貴的舊鑰匙！
         let bpData = JSON.parse(localStorage.getItem('bpRecords')) || [];
         let bpChart = null;
         let currentMeasureCount = 3;
 
-        // 五主題全方位宇宙語意字典
         const langDict = {
             classic: {
-                appTitle: "<span>🖤</span> 預設經典 · 血壓日記",
-                navBg: "bg-[#1e1e1e]",
-                navBorder: "border-b border-gray-800",
-                themeText: "text-gray-100",
-                fortuneTitle: "💡 本日健康小貼士 💡",
-                petName: "智能健康助理",
+                appTitle: "血壓日記 Pro",
+                appSubtitle: "Daily Health Tracker",
+                icon: "❤️",
+                iconBg: "from-rose-500 to-orange-500 shadow-rose-500/20",
+                navBg: "rgba(30, 30, 30, 0.75)",
+                fortuneTitle: "本日健康智慧",
+                fortuneDot: "✨",
+                fortuneBgIcon: "💡",
+                petName: "智能健康管理導師",
                 petAvatar: "📊",
-                petSpeech: "歡迎回來。量血壓前請保持平靜，雙腳著地不交叉，讓我們一起點滴追蹤血管的健康。",
-                formTitle: "📝 輸入本次量測數據",
-                countTitle: "選擇量測模式：",
+                petSpeech: "歡迎回來。量血壓前請保持平靜，雙腳著地不交叉，讓我們點滴追蹤血管健康。",
+                formTitle: "📝 登錄量測數據",
                 countBtn1: "單次量測",
-                countBtn2: "量測2次",
+                countBtn2: "連續2次",
                 countBtn3: "3次平均值",
-                moodTitle: "當前身體/心情狀態",
+                moodTitle: "當前身體 / 心情狀態",
                 tags: ["☀️ 起床空腹", "🌙 夜間睡前", "💊 正常服藥", "☕ 剛喝咖啡", "🌀 感到疲憊"],
-                customPlaceholder: "輸入自訂備註狀態",
-                customBtn: "＋新增備註",
+                customPlaceholder: "輸入自訂備註...",
+                customBtn: "＋新增",
                 submitBtn: "儲存本次健康數據",
+                submitBtnBg: "from-rose-500 to-orange-500 shadow-rose-500/20",
                 chartTitle: "📊 歷史趨勢折線圖",
                 chartLabel1: "收縮壓 (高壓)",
                 chartLabel2: "舒張壓 (低壓)",
                 historyTitle: "📜 歷史健康數據日誌",
-                exportBtn: "匯出CSV",
-                clearBtn: "清空數據",
+                exportBtn: "匯出 CSV",
+                clearBtn: "清空",
                 emptyText: "尚無歷史數據紀錄",
                 detailArrow: "🔽 展開各次細節",
                 detailPrefix: "第",
-                cardStyle: "bg-[#1e1e1e] border border-gray-800",
-                titleColor: "text-gray-300",
-                formTitleColor: "text-gray-200",
-                fortuneTextColor: "text-gray-400",
-                fortuneBorder: "border-2 border-dashed border-gray-700",
-                btnStyle: "bg-gray-700 hover:bg-gray-600 text-white",
+                glassStyle: "rgba(30, 30, 30, 0.75)",
                 normalAdvice: "量測完成。數值非常標準！請繼續保持均衡飲食與規律作息，加油！",
-                highAdvice: "提醒：目前平均血壓數值偏高。建議您稍作休息5-10分鐘後重測。若持續偏高，請多加留意身體狀況。",
+                highAdvice: "提醒：目前平均血壓數值偏高。建議您稍作休息5-10分鐘後重測。若持續偏高，請諮詢專業醫師。",
                 lowAdvice: "提示：目前平均血壓數值稍微偏低。若有頭暈、全身無力症狀，請立刻坐下休息並適度補充水分。"
             },
             god: {
-                appTitle: "<span>🔮</span> 降肉大師 · 健康算命攤",
-                navBg: "bg-amber-600",
-                navBorder: "border-none",
-                themeText: "text-white",
-                fortuneTitle: "☯️ 本日健康開運籤詩 ☯️",
+                appTitle: "降肉大師 · 血管算命攤",
+                appSubtitle: "Metaphysics Health",
+                icon: "🔮",
+                iconBg: "from-amber-500 to-red-600 shadow-amber-500/20",
+                navBg: "rgba(67, 42, 26, 0.8)",
+                fortuneTitle: "☯️ 本日健康開運籤詩",
+                fortuneDot: "🔱",
+                fortuneBgIcon: "☯️",
                 petName: "命理健康大師 · 降肉",
                 petAvatar: "🧙‍♂️",
-                petSpeech: "看你面帶紅光，是不是剛剛偷跑去跟人家吵架？伸出雙臂讓本大師幫你的血管掐指一算！",
-                formTitle: "📝 輸入本次量測數據",
-                countTitle: "本座要呼喚幾英呎：",
+                petSpeech: "看你面帶紅光，是不是剛剛又跟人開會大腦過熱？快伸出雙臂讓本大師幫你的血管掐指一算！",
+                formTitle: "📝 血管風水機密輸入",
                 countBtn1: "直接降肉",
-                countBtn2: "量2次",
+                countBtn2: "雙合密測",
                 countBtn3: "800英呎聖筊平均",
-                moodTitle: "今日凡間心情狀態",
+                moodTitle: "今日凡間凡心火氣狀態",
                 tags: ["☀️ 剛睡醒清醒", "🌙 準備躺平", "💊 已服仙丹", "☕ 注入咖啡因", "🌀 靈魂出竅中"],
-                customPlaceholder: "輸入自訂業障（如：主管碎念）",
+                customPlaceholder: "輸入自訂業障（如主管碎念）...",
                 customBtn: "＋開運符",
                 submitBtn: "☯️ 恭請九天玄女開示 ☯️",
+                submitBtnBg: "from-amber-500 to-red-600 shadow-amber-500/20",
                 chartTitle: "📊 血管風水波浪圖",
                 chartLabel1: "平均高壓 (凡心火氣)",
                 chartLabel2: "平均低壓 (內力定力)",
                 historyTitle: "📜 歷史健康功德簿",
-                exportBtn: "外傳CSV",
-                clearBtn: "渡化清空",
+                exportBtn: "外傳功德",
+                clearBtn: "渡化",
                 emptyText: "功德簿空空如也～",
                 detailArrow: "🔽 顯現各路英呎",
                 detailPrefix: "英呎",
-                cardStyle: "bg-[#1e1e1e] border-2 border-amber-500/30",
-                titleColor: "text-purple-400",
-                formTitleColor: "text-orange-400",
-                fortuneTextColor: "text-amber-200/80",
-                fortuneBorder: "border-2 border-dashed border-amber-500/50",
-                btnStyle: "bg-amber-600 hover:bg-amber-700 text-white",
+                glassStyle: "rgba(55, 35, 25, 0.85)",
                 normalAdvice: "善哉善哉！此等平均數據，血管格局宏大、百病不侵！大師鑑定：今日你是健康功德人！",
-                highAdvice: "大事不妙！血壓怪獸九天玄女降肉了！施主你這數字在發爐啊！快去旁邊靜坐10分鐘重測，切莫浮躁！",
-                lowAdvice: "嗯...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人或凡間雜事太多？記得提早躺平！"
+                highAdvice: "大事不妙！血壓怪獸九天玄女降肉了！施主你這數字在發爐啊！快去旁邊靜坐10分鐘，切莫浮躁！",
+                lowAdvice: "恩...印堂微發黃，平均數值稍微有一點調皮逆天喔。最近是不是犯小人？記得提早躺平！"
             },
             medical: {
-                appTitle: "<span>🏥</span> 智能血壓健康管理系統",
-                navBg: "bg-blue-700",
-                navBorder: "border-none",
-                themeText: "text-white",
-                fortuneTitle: "🩺 今日健康衛教提醒 🩺",
-                petName: "專業醫療健康管理師",
+                appTitle: "臨床血壓管理系統",
+                appSubtitle: "Clinical BPM Suite",
+                icon: "🩺",
+                iconBg: "from-blue-600 to-cyan-500 shadow-blue-500/20",
+                navBg: "rgba(20, 35, 55, 0.8)",
+                fortuneTitle: "🩺 今日臨床衛教提醒",
+                fortuneDot: "🔬",
+                fortuneBgIcon: "🧬",
+                petName: "醫療級健康管理師",
                 petAvatar: "🧑‍⚕️",
-                petSpeech: "歡迎回來。量血壓前請先靜坐休息5分鐘，雙腳平放不交叉，讓我們一起追蹤您的血管健康。",
-                formTitle: "📝 新增血壓量測紀錄",
-                countTitle: "本次連續量測次數：",
-                countBtn1: "量測1次",
-                countBtn2: "量測2次",
+                petSpeech: "歡迎使用。量測前請先靜坐休息5分鐘，雙腳平放勿交叉，讓我們精準追蹤您的心血管指標。",
+                formTitle: "📝 新增血壓臨床量測",
+                countBtn1: "單次量測",
+                countBtn2: "雙軌複查",
                 countBtn3: "3次量測取平均值",
-                moodTitle: "目前身體心情狀態",
+                moodTitle: "目前生理與情緒干擾變數",
                 tags: ["☀️ 晨間起床", "🌙 夜間睡前", "💊 服藥之後", "☕ 飲用咖啡", "🌀 感到疲憊"],
-                customPlaceholder: "輸入自訂狀態（如：運動過後）",
-                customBtn: "＋新狀態",
-                submitBtn: "💾 儲存本次健康紀錄 💾",
+                customPlaceholder: "輸入自訂生理狀態...",
+                customBtn: "＋狀態",
+                submitBtn: "💾 儲存並分析臨床紀錄 💾",
+                submitBtnBg: "from-blue-600 to-cyan-500 shadow-blue-500/20",
                 chartTitle: "📊 歷史血壓趨勢圖表",
                 chartLabel1: "收縮壓 (SYS)",
                 chartLabel2: "舒張壓 (DIA)",
                 historyTitle: "📜 歷史血壓數據報告",
-                exportBtn: "匯出CSV",
-                clearBtn: "清空紀錄",
+                exportBtn: "匯出 CSV",
+                clearBtn: "清空",
                 emptyText: "目前尚無任何血壓數據紀錄",
                 detailArrow: "🔽 展開各次量測細節",
                 detailPrefix: "量測",
-                cardStyle: "bg-[#1e1e1e] border-2 border-blue-500/10",
-                titleColor: "text-blue-400",
-                formTitleColor: "text-blue-400",
-                fortuneTextColor: "text-gray-300",
-                fortuneBorder: "border-2 border-dashed border-blue-500/30",
-                btnStyle: "bg-blue-600 hover:bg-blue-700 text-white",
-                normalAdvice: "非常優秀！本次量測的平均血壓完全符合國際標準。請繼續保持良好的生活作息與飲食習慣方式。",
+                glassStyle: "rgba(18, 30, 48, 0.85)",
+                normalAdvice: "非常優秀！本次量測的平均血壓完全符合國際標準。請繼續保持良好的生活作息與低鈉飲食。",
                 highAdvice: "請注意：本次平均數值偏高，已進入高血壓警戒範圍。請立刻坐下休息、喝杯溫水，若持續偏高請諮詢醫師。",
                 lowAdvice: "提示：目前量測的平均血壓數值稍微偏低。若您伴隨有頭暈或無力感，請多加留意並適時補充水分。"
             },
             corp: {
-                appTitle: "<span>💼</span> 科技業社畜求生儀表板",
-                navBg: "bg-teal-800",
-                navBorder: "border-none",
-                themeText: "text-white",
-                fortuneTitle: "🚨 每日職場防猝死指標 🚨",
-                petName: "職場求生導師",
-                petAvatar: "🧗",
-                petSpeech: "逼逼！看你雙眼無神，是不是剛剛開完會，又有人的大腦還沒開機就出來講鬼話？伸出雙臂量一下！",
+                appTitle: "科技業社畜求生儀表板",
+                appSubtitle: "Survivor KPI Monitor",
+                icon: "🧗",
+                iconBg: "from-teal-600 to-emerald-500 shadow-teal-500/20",
+                navBg: "rgba(20, 45, 40, 0.8)",
+                fortuneTitle: "🚨 每日職場防猝死 KPI",
+                fortuneDot: "⚠️",
+                fortuneBgIcon: "💼",
+                petName: "職場求生萬用導師",
+                petAvatar: "🧑‍💻",
+                petSpeech: "逼逼！看你雙眼無神，是不是剛剛開完會，又有人的大腦沒開機就出來講鬼話？趕快伸出雙臂量一下！",
                 formTitle: "📝 本次被釘牆上數據輸入",
-                countTitle: "目前職場壓力檢測點：",
                 countBtn1: "剛進公司",
                 countBtn2: "剛開完會",
                 countBtn3: "被主管痛釘3次平均",
                 moodTitle: "今日被職場蹂躪狀態",
                 tags: ["☀️ 剛吞完B群", "🌙 強制加班中", "💊 喝大杯美式", "☕ 聽見主管腳步", "🌀 靈魂已下班"],
-                customPlaceholder: "輸入自訂業障（如：豬隊友甩鍋）",
-                customBtn: "＋回報BUG",
-                submitBtn: "📊 計算今日續命 KPI 📊",
+                customPlaceholder: "輸入自訂業障（如甩鍋）...",
+                customBtn: "＋回報Bug",
+                submitBtn: "📊 計算今日續命黑科技 📊",
+                submitBtnBg: "from-teal-600 to-emerald-500 shadow-teal-500/20",
                 chartTitle: "📈 職場情緒血壓爆發線",
                 chartLabel1: "火氣暴走度 (SYS)",
                 chartLabel2: "理智耐受度 (DIA)",
@@ -259,35 +275,33 @@
                 emptyText: "目前沒有任何被蹂躪的紀錄",
                 detailArrow: "🔽 顯現每次被釘細節",
                 detailPrefix: "被釘第",
-                cardStyle: "bg-[#1e1e1e] border-2 border-teal-500/20",
-                titleColor: "text-teal-400",
-                formTitleColor: "text-teal-400",
-                fortuneTextColor: "text-teal-200",
-                fortuneBorder: "border-2 border-dashed border-teal-500/40",
-                btnStyle: "bg-teal-600 hover:bg-teal-700 text-white",
-                normalAdvice: "平均數據安全合格。看來今天沒被豬隊友氣到，血管非常通暢，特准你立刻下班去買杯珍奶續命！",
-                highAdvice: "緊急警報！血壓直接衝破季度 KPI 了！別拿公司的薪水懲罰自己的血管，現在立刻去茶水間摸魚10分鐘！",
-                lowAdvice: "偵測到核心動力嚴重下滑。是不是又在做沒產值的雜事了？理智與血壓都有點偏低，今晚宜強制登出拒絕加班！"
+                glassStyle: "rgba(15, 35, 32, 0.85)",
+                normalAdvice: "平均數據安全合格。看來今天沒被豬隊友氣到，血管通暢，特准你立刻下班去買杯珍奶續命！",
+                highAdvice: "緊急警報！血壓直接衝破季度 KPI 了！別拿公司的薪水懲罰血管，現在立刻去茶水間摸魚10分鐘！",
+                lowAdvice: "偵測到核心動力嚴重下滑。是不是又在做沒產值的雜事了？今晚宜強制登出拒絕加班！"
             },
             cyber: {
-                appTitle: "<span>⚡</span> 賽博人體效能檢測站",
-                navBg: "bg-purple-950",
-                navBorder: "border-b border-fuchsia-500/30",
-                themeText: "text-fuchsia-400",
-                fortuneTitle: "🦾 機體系統核心日誌 🦾",
-                petName: "AI 核心管理架構",
-                petAvatar: "🤖",
+                appTitle: "賽博人體效能檢測站",
+                appSubtitle: "Cyberpunk Core OS",
+                icon: "🤖",
+                iconBg: "from-purple-600 to-fuchsia-500 shadow-purple-500/20",
+                navBg: "rgba(35, 15, 45, 0.75)",
+                fortuneTitle: "🦾 機體系統核心日誌",
+                fortuneDot: "⚡",
+                fortuneBgIcon: "🤖",
+                petName: "AI 核心超頻架構",
+                petAvatar: "🦾",
                 petSpeech: "偵測到外部生物體連結。主機板目前電力剩餘 40%。請接入充氣袖帶，開始掃描核心管路壓力與幫浦時脈。",
                 formTitle: "⚡ 核心幫浦運作參數輸入",
-                countTitle: "機體管線超頻複查次數：",
                 countBtn1: "核心初檢",
                 countBtn2: "雙軌複查",
                 countBtn3: "系統效能3軌合盤",
-                moodTitle: "硬體元件目前超頻狀態",
+                moodTitle: "硬體元件目前超頻負載",
                 tags: ["☀️ 機體剛開機", "🌙 進入休眠區", "💊 注入修復奈米", "☕ 核心超頻中", "🌀 硬體嚴重過熱"],
-                customPlaceholder: "輸入自訂負載（如：核心代碼崩潰）",
+                customPlaceholder: "輸入自訂核心過載負載...",
                 customBtn: "＋改寫補丁",
-                submitBtn: "⚡ 執行核心效能同步 ⚡",
+                submitBtn: "⚡ 執行核心效能同步超頻 ⚡",
+                submitBtnBg: "from-purple-600 to-fuchsia-500 shadow-purple-500/20",
                 chartTitle: "🌌 核心水冷管線壓力波形",
                 chartLabel1: "主幫浦高壓超頻",
                 chartLabel2: "副管路回流壓力",
@@ -297,36 +311,28 @@
                 emptyText: "儲存核心內沒有任何機體參數",
                 detailArrow: "🔽 解碼各軌道數據",
                 detailPrefix: "軌道",
-                cardStyle: "bg-[#141414] border border-fuchsia-500/30",
-                titleColor: "text-fuchsia-400",
-                formTitleColor: "text-fuchsia-400",
-                fortuneTextColor: "text-fuchsia-300",
-                fortuneBorder: "border border-fuchsia-500/50 shadow-[0_0_10px_rgba(217,70,239,0.2)]",
-                btnStyle: "bg-purple-800 hover:bg-purple-700 text-fuchsia-200 border border-fuchsia-500/40",
+                glassStyle: "rgba(24, 10, 32, 0.85)",
                 normalAdvice: "核心水冷管線壓力完全符合出廠設定。系統效能極大化，准予繼續執行凡塵地表任務。",
                 highAdvice: "核心管路壓力超載臨界！主幫浦高壓異常超頻！偵測到硬體嚴重過熱，請立刻啟動安全降載躺平機制！",
-                lowAdvice: "警報：偵測到核心傳導幫浦功率偏低，流體交互速度遲緩。請立即接入碳水化合物能源並進入低能耗休眠。"
+                lowAdvice: "警報：偵測到核心傳導幫浦功率偏低，流體交互速度遲緩。請立即接入能源並進入低能耗休眠。"
             }
         };
 
-        const fortunes = [
-            "大吉 🌟 血管天庭飽滿！氣血順暢得像溜滑梯，今日宜放鬆心情！",
-            "中吉 ☕ 量血壓前與咖啡保持三十步距離，方能避開數字調皮之災。",
-            "小吉 🦶 秘訣：量測時雙腳平放不交叉，血液循環最開心！",
+        const fortunesList = [
+            "大吉 🌟 血管天庭飽滿！氣血順暢得像開高速公路，今日宜維持好心情！",
+            "中吉 ☕ 量血壓前與冰咖啡保持三十步距離，方能避開數據調皮之災。",
+            "小吉 🦶 秘訣：量測時雙腳平放、不交叉、不說話，血管最舒服！",
             "上上簽 🍦 心情愉悅則百病不侵，今天對鏡子裡的自己微笑三次可開運。",
-            "平安 💧 今日多喝無根水（溫開水），讓脈搏隨著微風低調打節拍。",
-            "小吉 🛌 昨晚睡得飽，血管沒煩惱！今晚宜提早躺平就寢。"
+            "微吉 🛌 昨晚睡得飽，血管沒煩惱！今晚宜提早強制登出休息。"
         ];
 
-        document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+        document.getElementById('fortuneText').innerText = fortunesList[Math.floor(Math.random() * fortunesList.length)];
 
-        // 主題下拉選單切換觸發
         function selectTheme(themeName) {
             currentTheme = themeName;
             updateUI();
         }
 
-        // 動態生成輸入框
         function renderInputs() {
             const container = document.getElementById('inputsContainer');
             let html = '';
@@ -340,39 +346,40 @@
                         if (i === 2) labelPrefix = '【500英呎】';
                         if (i === 3) labelPrefix = '【 降肉！】';
                     } else if (currentTheme === 'corp') {
-                        if (i === 1) labelPrefix = '【剛進公司】';
-                        if (i === 2) labelPrefix = '【剛開完會】';
-                        if (i === 3) labelPrefix = '【被主管釘】';
+                        if (i === 1) labelPrefix = '【進公司初檢】';
+                        if (i === 2) labelPrefix = '【開會後耐壓】';
+                        if (i === 3) labelPrefix = '【主管痛釘點】';
                     } else if (currentTheme === 'cyber') {
-                        if (i === 1) labelPrefix = '【核心初檢】';
+                        if (i === 1) labelPrefix = '【一軌初掃】';
                         if (i === 2) labelPrefix = '【二軌複查】';
-                        if (i === 3) labelPrefix = '【效能合盤】';
+                        if (i === 3) labelPrefix = '【核心合盤】';
                     } else {
                         labelPrefix = `【第 ${i} 次量測】`;
                     }
                 } else if (currentMeasureCount === 2) {
-                    labelPrefix = `${dict.detailPrefix} ${i} - `;
+                    labelPrefix = `【量測 ${i}】`;
                 } else {
-                    labelPrefix = currentTheme === 'god' ? '【即刻降肉】' : (currentTheme === 'cyber' ? '【主線掃描】' : '【單次量測】');
+                    labelPrefix = currentTheme === 'god' ? '【即刻降肉】' : (currentTheme === 'cyber' ? '【核心主線】' : '【單次數值】');
                 }
 
                 html += `
-                    <div class="bg-[#2a2a2a] p-3 rounded-2xl border border-gray-800">
-                        <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-black/30 p-4 rounded-2xl border border-white/[0.04] transition-all">
+                        <p class="text-[10px] font-bold text-gray-400 mb-2 tracking-wide">${labelPrefix}</p>
+                        <div class="grid grid-cols-3 gap-3">
                             <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}高壓</label>
+                                <label class="block text-[9px] font-medium text-gray-500 mb-1 text-center">收縮壓 (高壓)</label>
                                 <input type="number" inputmode="numeric" id="sys_${i}" required placeholder="mmHg" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-gray-500">
+                                    class="w-full bg-black/40 border border-white/[0.06] rounded-xl py-2.5 text-center text-base font-bold text-rose-400 focus:outline-none focus:border-rose-500/40 transition-all">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}低壓</label>
+                                <label class="block text-[9px] font-medium text-gray-500 mb-1 text-center">舒張壓 (低壓)</label>
                                 <input type="number" inputmode="numeric" id="dia_${i}" required placeholder="mmHg" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-gray-500">
+                                    class="w-full bg-black/40 border border-white/[0.06] rounded-xl py-2.5 text-center text-base font-bold text-cyan-400 focus:outline-none focus:border-cyan-500/40 transition-all">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-0.5 text-center">${labelPrefix}心跳</label>
+                                <label class="block text-[9px] font-medium text-gray-500 mb-1 text-center">心率 (脈搏)</label>
                                 <input type="number" inputmode="numeric" id="pulse_${i}" required placeholder="bpm" 
-                                    class="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl p-2 text-center text-base font-bold text-orange-400 focus:outline-none focus:border-gray-500">
+                                    class="w-full bg-black/40 border border-white/[0.06] rounded-xl py-2.5 text-center text-base font-bold text-emerald-400 focus:outline-none focus:border-emerald-500/40 transition-all">
                             </div>
                         </div>
                     </div>
@@ -386,9 +393,9 @@
             for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`btnCount${i}`);
                 if (i === count) {
-                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-gray-600 text-white shadow-sm";
+                    btn.className = "text-xs py-2 rounded-xl font-semibold transition-all bg-white/[0.12] text-white shadow-md";
                 } else {
-                    btn.className = "text-xs px-2.5 py-1 rounded-lg font-bold transition-all bg-[#1a1a1a] text-gray-400 shadow-sm";
+                    btn.className = "text-xs py-2 rounded-xl font-medium transition-all text-gray-500 hover:text-gray-300";
                 }
             }
             renderInputs();
@@ -398,16 +405,22 @@
             const container = document.getElementById('tagContainer');
             const tags = langDict[currentTheme].tags;
             container.innerHTML = tags.map(tag => `
-                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all">${tag}</button>
+                <button type="button" onclick="toggleTag(this)" class="tag-btn bg-white/[0.04] text-gray-300 text-xs px-3 py-1.5 rounded-xl border border-white/[0.04] transition-all whitespace-nowrap">${tag}</button>
             `).join('');
         }
 
         function toggleTag(btn) {
-            if (btn.classList.contains('bg-orange-500') || btn.classList.contains('bg-fuchsia-600')) {
-                btn.className = "tag-btn bg-[#2a2a2a] text-gray-300 text-xs px-3 py-2 rounded-xl border border-gray-800 transition-all";
+            if (btn.classList.contains('active-tag')) {
+                btn.className = "tag-btn bg-white/[0.04] text-gray-300 text-xs px-3 py-1.5 rounded-xl border border-white/[0.04] transition-all whitespace-nowrap";
+                btn.classList.remove('active-tag');
             } else {
-                const highlightClass = currentTheme === 'cyber' ? "bg-fuchsia-600 text-white" : "bg-orange-500 text-white";
-                btn.className = `tag-btn ${highlightClass} text-xs px-3 py-2 rounded-xl border-transparent shadow-sm font-bold transition-all`;
+                let activeStyle = "bg-gradient-to-r from-rose-500/20 to-orange-500/20 text-orange-400 border-orange-500/30";
+                if(currentTheme === 'god') activeStyle = "bg-amber-500/20 text-amber-300 border-amber-500/40";
+                if(currentTheme === 'medical') activeStyle = "bg-blue-500/20 text-blue-300 border-blue-500/40";
+                if(currentTheme === 'corp') activeStyle = "bg-teal-500/20 text-teal-300 border-teal-500/40";
+                if(currentTheme === 'cyber') activeStyle = "bg-purple-500/20 text-fuchsia-300 border-purple-500/40";
+
+                btn.className = `tag-btn ${activeStyle} text-xs px-3 py-1.5 rounded-xl border font-semibold transition-all whitespace-nowrap active-tag`;
             }
         }
 
@@ -422,8 +435,8 @@
             newBtn.type = 'button';
             newBtn.onclick = function() { toggleTag(this); };
             
-            const highlightClass = currentTheme === 'cyber' ? "bg-fuchsia-600 border-fuchsia-600" : "bg-purple-600 border-purple-600";
-            newBtn.className = `tag-btn ${highlightClass} text-white text-xs px-3 py-2 rounded-xl shadow-sm font-bold transition-all`;
+            let activeStyle = "bg-gradient-to-r from-rose-500/20 to-orange-500/20 text-orange-400 border-orange-500/30";
+            newBtn.className = `tag-btn ${activeStyle} text-xs px-3 py-1.5 rounded-xl border font-semibold transition-all whitespace-nowrap active-tag`;
             newBtn.innerText = tagText;
 
             container.appendChild(newBtn);
@@ -453,12 +466,12 @@
             const avgPulse = Math.round(totalPulse / currentMeasureCount);
             
             const activeTags = [];
-            document.querySelectorAll('.tag-btn.bg-orange-500, .tag-btn.bg-purple-600, .tag-btn.bg-fuchsia-600').forEach(btn => activeTags.push(btn.innerText));
+            document.querySelectorAll('.tag-btn.active-tag').forEach(btn => activeTags.push(btn.innerText));
             if (currentMeasureCount > 1) {
                 let modeTag = `📊 ${currentMeasureCount}次平均`;
-                if(currentTheme === 'god') modeTag = `🪶 九天玄女合盤`;
-                if(currentTheme === 'corp') modeTag = `💼 壓力整合報告`;
-                if(currentTheme === 'cyber') modeTag = `⚡ 3軌數據流同步`;
+                if(currentTheme === 'god') modeTag = `🪶 玄女合盤`;
+                if(currentTheme === 'corp') modeTag = `💼 壓力整合`;
+                if(currentTheme === 'cyber') modeTag = `⚡ 3軌同步`;
                 activeTags.push(modeTag);
             }
 
@@ -473,6 +486,7 @@
             };
 
             bpData.unshift(newRecord);
+            // 🛠️ 舊資料對齊：完美使用 bpRecords
             localStorage.setItem('bpRecords', JSON.stringify(bpData));
 
             interactPet(avgSys, avgDia);
@@ -497,18 +511,17 @@
             const card = document.getElementById('petCard');
             const dict = langDict[currentTheme];
 
-            // 根據不同主題渲染對應邊框
             if (sys < 120 && dia < 80) {
-                card.className = `${currentTheme==='cyber'?'bg-fuchsia-950/20 border-fuchsia-500/50':'bg-emerald-950/40 border-emerald-500/30'} p-4 rounded-[2rem] shadow-sm border-2 text-center transition-all duration-300`;
-                avatar.innerText = currentTheme === 'god' ? "🧙‍♂️ 🔮 ✨" : (currentTheme === 'cyber' ? "🤖 🟢 🌌" : "🧑‍⚕️ 💚 📈");
+                card.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                avatar.innerText = currentTheme === 'god' ? "🧙‍♂️✨" : (currentTheme === 'cyber' ? "🤖🌌" : "🧑‍⚕️💚");
                 speech.innerText = dict.normalAdvice;
             } else if (sys >= 140 || dia >= 90) {
-                card.className = `${currentTheme==='cyber'?'bg-fuchsia-950/20 border-red-500/50':'bg-rose-950/40 border-rose-500/30'} p-4 rounded-[2rem] shadow-sm border-2 text-center transition-all duration-300`;
-                avatar.innerText = currentTheme === 'god' ? "👹 🛑 ⚡" : (currentTheme === 'cyber' ? "🚨 🛑 ⚡" : "🩺 ⚠️ 🛑");
+                card.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                avatar.innerText = currentTheme === 'god' ? "👹🛑" : (currentTheme === 'cyber' ? "🚨⚡" : "🩺⚠️");
                 speech.innerText = dict.highAdvice;
             } else {
-                card.className = `${currentTheme==='cyber'?'bg-fuchsia-950/20 border-amber-500/50':'bg-amber-950/40 border-amber-500/30'} p-4 rounded-[2rem] shadow-sm border-2 text-center transition-all duration-300`;
-                avatar.innerText = currentTheme === 'god' ? "🤨 💦 🌀" : (currentTheme === 'cyber' ? "🤖 🟡 🌀" : "📊 🟡 🌀");
+                card.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                avatar.innerText = currentTheme === 'god' ? "🧙‍♂️🌀" : (currentTheme === 'cyber' ? "🤖🌀" : "📊🟡");
                 speech.innerText = dict.lowAdvice;
             }
         }
@@ -516,47 +529,39 @@
         function updateUI() {
             const dict = langDict[currentTheme];
             
-            // 頂部導航
-            const nav = document.getElementById('navBar');
-            nav.className = `${dict.navBg} ${dict.navBorder} pt-12 pb-6 px-4 shadow-sm rounded-b-[2rem] sticky top-0 z-50 flex items-center justify-between`;
-            document.getElementById('app-title').innerHTML = dict.appTitle;
-            document.getElementById('app-title').className = `text-xl font-bold tracking-wide flex items-center gap-2 pl-2 ${dict.themeText}`;
+            // 全域毛玻璃背景色調更換
+            const glasses = document.querySelectorAll('.app-glass');
+            glasses.forEach(el => {
+                el.style.backgroundColor = dict.glassStyle;
+            });
+
+            document.getElementById('app-title').innerText = dict.appTitle;
+            document.getElementById('app-subtitle').innerText = dict.appSubtitle;
+            document.getElementById('app-icon').innerText = dict.icon;
+            document.getElementById('app-icon').className = `w-10 h-10 rounded-2xl flex items-center justify-center text-xl bg-gradient-to-tr ${dict.iconBg}`;
             
-            // 籤詩卡片
-            const fCard = document.getElementById('fortuneCard');
-            fCard.className = `${dict.cardStyle} ${dict.fortuneBorder} p-3 rounded-2xl shadow-sm text-center`;
-            document.getElementById('fortuneTitle').className = `text-xs font-bold ${dict.titleColor}`;
             document.getElementById('fortuneTitle').innerText = dict.fortuneTitle;
-            document.getElementById('fortuneText').className = `text-xs ${dict.fortuneTextColor} mt-1 font-medium`;
+            document.getElementById('fortuneDot').innerText = dict.fortuneDot;
+            document.getElementById('fortuneBgIcon').innerText = dict.fortuneBgIcon;
 
-            // 表單與卡片整體更新
-            document.getElementById('formCard').className = `${dict.cardStyle} p-5 rounded-[2rem] shadow-sm`;
-            document.getElementById('chartCard').className = `${dict.cardStyle} p-4 rounded-[2rem] shadow-sm`;
-            document.getElementById('historyCard').className = `${dict.cardStyle} p-5 rounded-[2rem] shadow-sm`;
-
-            document.getElementById('form-title').className = `text-base font-bold ${dict.formTitleColor} mb-3 flex items-center gap-1.5`;
             document.getElementById('form-title').innerText = dict.formTitle;
-            document.getElementById('lbl-count-title').innerText = dict.countTitle;
-            document.getElementById('btnCount1').innerText = dict.countBtn1;
-            document.getElementById('btnCount2').innerText = dict.countBtn2;
-            document.getElementById('btnCount3').innerText = dict.countBtn3;
             document.getElementById('lbl-mood-title').innerText = dict.moodTitle;
             document.getElementById('customTagInput').placeholder = dict.customPlaceholder;
             document.getElementById('custom-tag-btn').innerText = dict.customBtn;
+            
             document.getElementById('submit-btn').innerText = dict.submitBtn;
-            document.getElementById('chart-title').className = `text-base font-bold ${dict.titleColor} mb-3 flex items-center gap-1`;
+            document.getElementById('submit-btn').className = `w-full bg-gradient-to-r ${dict.submitBtnBg} text-white font-bold py-4 rounded-2xl active:scale-[0.97] transition-all text-sm mt-3 tracking-wide`;
+            
             document.getElementById('chart-title').innerText = dict.chartTitle;
-            document.getElementById('history-title').className = `text-base font-bold ${dict.titleColor} flex items-center gap-1`;
             document.getElementById('history-title').innerText = dict.historyTitle;
             document.getElementById('export-btn').innerText = dict.exportBtn;
             document.getElementById('clear-btn').innerText = dict.clearBtn;
-            document.getElementById('petName').className = `text-xs font-bold ${dict.titleColor} mb-0.5`;
             document.getElementById('petName').innerText = dict.petName;
 
             if (bpData.length > 0) {
                 interactPet(bpData[0].sys, bpData[0].dia);
             } else {
-                document.getElementById('petCard').className = `${dict.cardStyle} p-4 rounded-[2rem] shadow-sm text-center`;
+                document.getElementById('petCard').style.borderColor = 'rgba(255,255,255,0.06)';
                 document.getElementById('petAvatar').innerText = dict.petAvatar;
                 document.getElementById('petSpeech').innerText = dict.petSpeech;
             }
@@ -564,53 +569,55 @@
             renderTags();
             setMeasureCount(currentMeasureCount);
 
-            // 歷史清單渲染
+            // 歷史列表 App 化渲染
             const listContainer = document.getElementById('historyList');
             if (bpData.length === 0) {
-                listContainer.innerHTML = `<p class="text-center text-gray-500 py-6 text-xs">${dict.emptyText}</p>`;
+                listContainer.innerHTML = `<p class="text-center text-gray-500 py-8 text-xs">${dict.emptyText}</p>`;
             } else {
                 listContainer.innerHTML = bpData.map(r => {
                     let detailsHtml = '';
                     if (r.details && r.details.length > 1) {
-                        detailsHtml = `<div id="detail-${r.id}" class="hidden mt-1.5 p-2 bg-[#2a2a2a] rounded-xl text-[11px] text-gray-400 space-y-0.5 border border-gray-800">`;
+                        detailsHtml = `<div id="detail-${r.id}" class="hidden mt-2 p-3 bg-black/40 rounded-2xl text-[11px] text-gray-400 space-y-1.5 border border-white/[0.04]">`;
                         r.details.forEach((d, idx) => {
-                            let prefix = '';
+                            let prefix = `第 ${idx+1} 次量測`;
                             if (r.details.length === 3) {
                                 if (currentTheme === 'god') {
-                                    if (idx === 0) prefix = '800英呎';
-                                    if (idx === 1) prefix = '500英呎';
-                                    if (idx === 2) prefix = '中華路降肉';
+                                    if (idx === 0) prefix = '🔮 800英呎處';
+                                    if (idx === 1) prefix = '🔮 500英呎處';
+                                    if (idx === 2) prefix = '🔮 中華路降肉';
                                 } else if (currentTheme === 'corp') {
-                                    if (idx === 0) prefix = '進公司初檢';
-                                    if (idx === 1) prefix = '開會後耐壓';
-                                    if (idx === 2) prefix = '主管痛釘點';
+                                    if (idx === 0) prefix = '💼 進公司初檢';
+                                    if (idx === 1) prefix = '💼 開會後耐壓';
+                                    if (idx === 2) prefix = '💼 主管痛釘點';
                                 } else if (currentTheme === 'cyber') {
-                                    if (idx === 0) prefix = '一軌初掃';
-                                    if (idx === 1) prefix = '二軌複查';
-                                    if (idx === 2) prefix = '核心合盤';
-                                } else {
-                                    prefix = `第 ${idx+1} 次量測`;
+                                    if (idx === 0) prefix = '⚡ 一軌初描';
+                                    if (idx === 1) prefix = '⚡ 二軌複查';
+                                    if (idx === 2) prefix = '⚡ 核心合盤';
                                 }
-                            } else {
-                                prefix = `第 ${idx+1} 次`;
                             }
-                            detailsHtml += `<p>${prefix}：高壓 <span class="font-bold text-orange-400">${d.sys}</span> / 低壓 <span class="font-bold text-orange-400">${d.dia}</span> / 心跳 <span class="font-bold text-orange-400">${d.pulse}</span></p>`;
+                            detailsHtml += `<p class="flex justify-between"><span>${prefix}</span><span class="font-bold text-gray-300">高壓 ${d.sys} / 低壓 ${d.dia} / 心率 ${d.pulse}</span></p>`;
                         });
                         detailsHtml += `</div>`;
                     }
 
+                    // 高級感卡片行設計
                     return `
-                        <div class="py-3 divide-y divide-transparent">
-                            <div class="flex justify-between items-center text-sm">
-                                <div onclick="${r.details && r.details.length > 1 ? `toggleDetail(${r.id})` : ''}" class="cursor-pointer">
-                                    <p class="text-[10px] text-gray-500 font-bold flex items-center gap-1">
-                                        ${r.date} ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px]">🔽 ${dict.detailArrow.split(' ')[1]}</span>` : ''}
-                                    </p>
-                                    <p class="text-[11px] text-amber-500 font-bold mt-0.5">${r.tags || '🐾 日常紀錄'}</p>
+                        <div class="py-3.5 transition-all">
+                            <div class="flex justify-between items-center">
+                                <div onclick="${r.details && r.details.length > 1 ? `toggleDetail(${r.id})` : ''}" class="cursor-pointer flex-1 pr-4">
+                                    <div class="flex items-center gap-1.5">
+                                        <p class="text-[10px] text-gray-500 font-bold tracking-tight">${r.date}</p>
+                                        ${r.details && r.details.length > 1 ? `<span id="arrow-${r.id}" class="text-[9px] bg-white/5 px-1.5 py-0.5 rounded-md text-gray-400">🔽 細節</span>` : ''}
+                                    </div>
+                                    <p class="text-xs font-semibold text-orange-400/90 mt-1 tracking-wide">${r.tags || '🐾 日常追蹤'}</p>
                                 </div>
-                                <div class="text-right">
-                                    <span class="font-bold text-gray-200 text-base bg-[#2a2a2a] px-2 py-0.5 rounded-xl border border-gray-800">${r.sys}/${r.dia}</span>
-                                    <span class="text-xs text-gray-500 ml-1">💓 ${r.pulse}</span>
+                                <div class="text-right flex items-center gap-2">
+                                    <div class="bg-white/[0.04] px-3 py-1.5 rounded-2xl border border-white/[0.05]">
+                                        <span class="font-bold text-gray-100 text-sm tracking-tight">${r.sys}</span>
+                                        <span class="text-gray-500 text-xs mx-0.5">/</span>
+                                        <span class="font-bold text-gray-400 text-sm tracking-tight">${r.dia}</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500 font-medium w-12 text-center">❤️${r.pulse}</span>
                                 </div>
                             </div>
                             ${detailsHtml}
@@ -619,7 +626,7 @@
                 }).join('');
             }
 
-            // 更新折線圖
+            // Chart.js 上架色調校正
             const chartData = [...bpData].slice(0, 7).reverse();
             const labels = chartData.map(r => r.date.split(' ')[0]);
             const sysValues = chartData.map(r => r.sys);
@@ -628,29 +635,31 @@
             if (bpChart) bpChart.destroy();
 
             const ctx = document.getElementById('bpChart').getContext('2d');
+            let themeHighColor = '#ef4444';
+            let themeLowColor = '#06b6d4';
             
-            // 賽博版用粉綠配，其餘用紅藍配
-            const highColor = currentTheme === 'cyber' ? '#d946ef' : '#f87171';
-            const lowColor = currentTheme === 'cyber' ? '#22c55e' : '#60a5fa';
+            if(currentTheme === 'cyber') { themeHighColor = '#d946ef'; themeLowColor = '#a855f7'; }
+            if(currentTheme === 'corp') { themeHighColor = '#f43f5e'; themeLowColor = '#14b8a6'; }
+            if(currentTheme === 'god') { themeHighColor = '#f59e0b'; themeLowColor = '#ef4444'; }
 
             bpChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: dict.chartLabel1, data: sysValues, borderColor: highColor, backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: highColor },
-                        { label: dict.chartLabel2, data: diaValues, borderColor: lowColor, backgroundColor: 'transparent', tension: 0.3, borderWidth: 3, pointBackgroundColor: lowColor }
+                        { label: dict.chartLabel1, data: sysValues, borderColor: themeHighColor, backgroundColor: 'transparent', tension: 0.34, borderWidth: 3, pointRadius: 2, pointBackgroundColor: themeHighColor },
+                        { label: dict.chartLabel2, data: diaValues, borderColor: themeLowColor, backgroundColor: 'transparent', tension: 0.34, borderWidth: 3, pointRadius: 2, pointBackgroundColor: themeLowColor }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { 
-                        legend: { labels: { boxWidth: 8, color: '#9ca3af', font: { size: 10, weight: 'bold' } } } 
+                        legend: { labels: { boxWidth: 6, color: '#9ca3af', font: { size: 10, weight: '600' } } } 
                     },
                     scales: { 
-                        y: { ticks: { color: '#6b7280', font: { size: 9 } }, grid: { color: '#2a2a2a' } }, 
-                        x: { ticks: { color: '#6b7280', font: { size: 9 } }, grid: { display: false } } 
+                        y: { ticks: { color: '#4b5563', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.03)' } }, 
+                        x: { ticks: { color: '#4b5563', font: { size: 9 } }, grid: { display: false } } 
                     }
                 }
             });
@@ -669,14 +678,14 @@
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `血壓健康足跡報告_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `血壓日記_上架備份_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         function clearData() {
-            if (confirm('確定要清空所有儲存的歷史血壓量測紀錄嗎？🥺')) {
+            if (confirm('確定要格式化清空所有歷史血壓紀錄嗎？🥺')) {
                 bpData = [];
                 localStorage.removeItem('bpRecords');
                 updateUI();
