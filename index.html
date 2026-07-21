@@ -15,11 +15,9 @@
             font-family: -apple-system, 'SF Pro Display', 'Noto Sans TC', sans-serif;
             transition: background-color 0.4s ease, color 0.4s ease;
             user-select: none;
-            /* 🎨 夢幻漸層多巴胺底色，青春活潑不單調 */
             background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 50%, #f5f0ff 100%);
             background-attachment: fixed;
         }
-        /* 🎨 棉花糖圓潤泡泡卡片 */
         .app-bubble-card {
             background: rgba(255, 255, 255, 0.92);
             border: 2px solid rgba(255, 255, 255, 0.6);
@@ -142,6 +140,18 @@
                 <p class="text-center text-gray-400 py-8 text-xs">尚無歷史數據紀錄</p>
             </div>
         </div>
+
+        <!-- 🌸 頁面最下方新增：今日運勢抽籤體驗專屬連結區 -->
+        <div class="p-5 rounded-[2.5rem] app-bubble-card text-center shadow-[0_15px_40px_rgba(244,63,94,0.03)] transition-all duration-300 hover:shadow-lg">
+            <div class="text-3xl mb-1.5 animate-bounce">🎴</div>
+            <h3 class="text-xs font-extrabold text-pink-500 tracking-wide">本日幸運星靈感體驗</h3>
+            <p class="text-[11px] text-gray-500 font-medium mt-1 mb-3">量完血壓，快來測測看今日的好運與靈感占卜吧！</p>
+            <a href="https://wefily777-cmyk.github.io/today-draw/home.html" target="_blank" rel="noopener noreferrer" 
+               class="inline-block w-full bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 text-white font-extrabold py-3 px-6 rounded-2xl shadow-[0_6px_20px_rgba(217,70,239,0.25)] active:scale-[0.96] transition-all duration-200 text-xs tracking-wider">
+                ✨ 前往「今日抽籤」幸運小天地 ✨
+            </a>
+        </div>
+
     </div>
 
     <script>
@@ -150,7 +160,6 @@
         let bpChart = null;
         let currentMeasureCount = 3;
 
-        // 🎨 青春馬卡龍多色系全配置語意字典（粉紅、粉黃、粉紫、粉橘大撞色）
         const langDict = {
             classic: {
                 appTitle: "血壓日記 Pro",
@@ -387,7 +396,6 @@
                     labelPrefix = currentTheme === 'god' ? '即刻降肉核心' : (currentTheme === 'cyber' ? '核心主線數據' : '單次精準量測');
                 }
 
-                // 🎨 青春糖果風輸入框
                 html += `
                     <div class="bg-pink-50/30 p-4 rounded-2xl border border-pink-100/40 transition-all shadow-sm">
                         <p class="text-[11px] font-extrabold text-pink-500/90 mb-2.5 tracking-wide flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping"></span>${labelPrefix}</p>
@@ -559,7 +567,6 @@
         function updateUI() {
             const dict = langDict[currentTheme];
             
-            // 動態更換全域 Y2K 馬卡龍漸層背景
             document.body.style.background = dict.bodyBg;
             document.body.style.backgroundAttachment = "fixed";
             document.body.style.color = dict.textColor;
@@ -603,7 +610,6 @@
             renderTags();
             setMeasureCount(currentMeasureCount);
 
-            // 歷史清單繽紛化
             const listContainer = document.getElementById('historyList');
             if (bpData.length === 0) {
                 listContainer.innerHTML = `<p class="text-center text-gray-400 py-8 text-xs">${dict.emptyText}</p>`;
@@ -659,7 +665,6 @@
                 }).join('');
             }
 
-            // 青春活力 Chart.js 糖果配色
             const chartData = [...bpData].slice(0, 7).reverse();
             const labels = chartData.map(r => r.date.split(' ')[0]);
             const sysValues = chartData.map(r => r.sys);
@@ -668,8 +673,8 @@
             if (bpChart) bpChart.destroy();
 
             const ctx = document.getElementById('bpChart').getContext('2d');
-            let themeHighColor = '#f43f5e'; // 蜜桃粉
-            let themeLowColor = '#06b6d4';  // 汽水藍
+            let themeHighColor = '#f43f5e';
+            let themeLowColor = '#06b6d4';
             
             if(currentTheme === 'cyber') { themeHighColor = '#d946ef'; themeLowColor = '#8b5cf6'; }
             if(currentTheme === 'corp') { themeHighColor = '#10b981'; themeLowColor = '#f59e0b'; }
